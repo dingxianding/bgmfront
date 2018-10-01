@@ -2,6 +2,63 @@ import { isUrl } from '../utils/utils';
 
 const menuData = [
   {
+    name: '零部件设计开发过程信息管理',
+    icon: 'form',
+    path: 'teil',
+    children: [
+      {
+        name: '基础信息管理',
+        path: 'teil-list',
+        authority: ['admin', 'master', 'user'],
+      },
+      {
+        name: '过程信息管理',
+        path: 'teil-schedule',
+        authority: ['admin', 'master', 'user'],
+      },
+    ],
+  },
+  {
+    name: '零部件Know-How信息管理',
+    icon: 'form',
+    path: 'test',
+    children: [
+      {
+        name: '试验信息管理',
+        path: 'teil-test',
+        authority: ['admin', 'master', 'user'],
+      },
+    ],
+  },
+  {
+    name: '车型项目信息管理',
+    icon: 'form',
+    path: 'modell',
+    children: [
+      {
+        name: '车型信息管理',
+        path: 'modell-list',
+        authority: ['admin', 'master', 'user'],
+      },
+      {
+        name: '零部件查询',
+        path: 'table-list3',
+      },
+    ],
+  },
+  {
+    name: '人员信息管理',
+    icon: 'form',
+    path: 'user',
+    children: [
+      {
+        name: '人员管理',
+        path: 'user-list',
+        authority: ['admin', 'master', 'user'],
+      },
+    ],
+  },
+  {
     name: 'dashboard',
     icon: 'dashboard',
     path: 'dashboard',
@@ -166,27 +223,6 @@ const menuData = [
       {
         name: '查询表格2',
         path: 'table-list2',
-      },
-      {
-        name: '查询表格3',
-        path: 'table-list3',
-      },
-    ],
-  },
-  {
-    name: 'FOP进度信息管理',
-    icon: 'form',
-    path: 'teil',
-    children: [
-      {
-        name: '零件信息管理',
-        path: 'teil-list',
-        authority: ['admin', 'master', 'user'],
-      },
-      {
-        name: '车型管理',
-        path: 'modell-list',
-        authority: ['admin', 'master', 'user'],
       },
       {
         name: '查询表格3',

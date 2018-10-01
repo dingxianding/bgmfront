@@ -1,4 +1,28 @@
 import moment from 'moment';
+import { parse, stringify } from 'qs';
+
+export function stringRole(val) {
+  switch (val) {
+    case 1:
+      return 'admin';
+    case 2:
+      return 'master';
+    case 3:
+      return 'user';
+    case 4:
+      return 'guest';
+    default:
+      return '';
+  }
+}
+
+export function momentTime(val) {
+  if (val) {
+    return moment(val).format('YYYY-MM-DD HH:mm:ss');
+  } else {
+    return '';
+  }
+}
 
 export function fixedZero(val) {
   return val * 1 < 10 ? `0${val}` : val;

@@ -1,186 +1,368 @@
-import React, { Component } from 'react';
-import { connect } from 'dva';
-import { Card, Badge, Table, Divider } from 'antd';
+import React, { PureComponent, Fragment } from 'react';
+import { connect } from 'dva/index';
+import { Link } from 'dva/router';
+import { Card, List, Table, Divider, Popconfirm, message } from 'antd';
 import DescriptionList from 'components/DescriptionList';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 import styles from './TeilProfile.less';
+import MyTable from 'components/MyTable';
 
 const { Description } = DescriptionList;
 
-const progressColumns = [
-  {
-    title: '时间',
-    dataIndex: 'time',
-    key: 'time',
-  },
-  {
-    title: '当前进度',
-    dataIndex: 'rate',
-    key: 'rate',
-  },
-  {
-    title: '状态',
-    dataIndex: 'status',
-    key: 'status',
-    render: text =>
-      text === 'success' ? (
-        <Badge status="success" text="成功" />
-      ) : (
-        <Badge status="processing" text="进行中" />
-      ),
-  },
-  {
-    title: '操作员ID',
-    dataIndex: 'operator',
-    key: 'operator',
-  },
-  {
-    title: '耗时',
-    dataIndex: 'cost',
-    key: 'cost',
-  },
-];
+const getValue = obj =>
+  Object.keys(obj)
+    .map(key => obj[key])
+    .join(',');
 
-@connect(({ profile, loading }) => ({
-  profile,
-  loading: loading.effects['profile/fetchBasic'],
+@connect(({ teil, loading }) => ({
+  teil,
+  loading: loading.models.teil,
 }))
-export default class TeilProfile extends Component {
+export default class TeilProfile extends PureComponent {
   componentDidMount() {
-    const { dispatch } = this.props;
+    const { dispatch, match } = this.props;
+    const id = parseInt(match.params.id, 10);
+
+    //TODO 角色判断
+    //const currentPageRole = stringRole(userInfo.role);
+    const currentPageRole = 'admin';
+
     dispatch({
-      type: 'profile/fetchBasic',
+      type: 'teil/getOne',
+      payload: {
+        id,
+      },
     });
+    // 如果当前页面的角色为admin和master,获取子用户,user和guest没有子用户表
+    // if (currentPageRole === 'admin' || currentPageRole === 'master') {
+    //   dispatch({
+    //     type: 'listUser/listUser',
+    //     payload: {
+    //       id,
+    //     },
+    //   });
+    // }
+    // 获取用户创建的群组（只能管理自己创建的群组）
+    // dispatch({
+    //   type: 'userInfo/listGroup',
+    //   payload: {
+    //     userId: id,
+    //   },
+    // });
   }
 
-  render() {
-    const { profile, loading } = this.props;
-    const { basicGoods, basicProgress } = profile;
-    let goodsData = [];
-    if (basicGoods.length) {
-      let num = 0;
-      let amount = 0;
-      basicGoods.forEach(item => {
-        num += Number(item.num);
-        amount += Number(item.amount);
+  componentWillReceiveProps(nextProps) {
+    const { dispatch, match } = this.props;
+    const id = parseInt(nextProps.match.params.id, 10);
+    if (nextProps.match.params.id && match.params.id !== nextProps.match.params.id) {
+      dispatch({
+        type: 'teil/getOne',
+        payload: {
+          id,
+        },
       });
-      goodsData = basicGoods.concat({
-        id: '总计',
-        num,
-        amount,
-      });
+      // 获取用户创建的群组（只能管理自己创建的群组）
+      // dispatch({
+      //   type: 'userInfo/listGroup',
+      //   payload: {
+      //     userId: id,
+      //   },
+      // });
     }
+  }
 
-    const renderContent = (value, row, index) => {
-      const obj = {
-        children: value,
-        props: {},
-      };
-      if (index === basicGoods.length) {
-        obj.props.colSpan = 0;
-      }
-      return obj;
+  updateUser = ({ values }) => {
+    const { dispatch, userInfo: { userInfo } } = this.props;
+    const { id } = userInfo;
+
+    dispatch({
+      type: 'userInfo/updateUser',
+      payload: {
+        id,
+        ...values,
+      },
+    }).then(() => {
+      dispatch({
+        type: 'userInfo/getUser',
+        payload: {
+          id,
+        },
+      });
+    });
+  };
+
+  createUser = values => {
+    const { dispatch, match } = this.props;
+    const userId = parseInt(match.params.id, 10);
+    const { name, password, email, mobile, remark } = values;
+
+    dispatch({
+      type: 'listUser/createUser',
+      payload: {
+        name,
+        password: md5(password),
+        email,
+        mobile,
+        remark,
+        role: 3,
+        user_id: userId,
+      },
+    }).then(() => {
+      dispatch({
+        type: 'listUser/listUser',
+        payload: {
+          id: userId,
+        },
+      });
+    });
+  };
+
+  createGroup = values => {
+    const { dispatch, userInfo: { userInfo } } = this.props;
+    const { id } = userInfo.id;
+    const { name, remark } = values;
+    dispatch({
+      type: 'listGroup/createGroup',
+      payload: {
+        name,
+        remark,
+        user_id: id,
+      },
+    }).then(() => {
+      dispatch({
+        type: 'userInfo/listUserGroup',
+        payload: {
+          id,
+        },
+      });
+    });
+  };
+
+  handleUserTableChange = (pagination, filtersArg, sorter) => {
+    const { dispatch, match } = this.props;
+    const userId = parseInt(match.params.id, 10);
+
+    const filters = Object.keys(filtersArg).reduce((obj, key) => {
+      const newObj = { ...obj };
+      newObj[key] = getValue(filtersArg[key]);
+      return newObj;
+    }, {});
+
+    const params = {
+      id: userId,
+      page: pagination.current,
+      limit: pagination.pageSize,
+      ...filters,
     };
 
-    const goodsColumns = [
-      {
-        title: '商品编号',
-        dataIndex: 'id',
-        key: 'id',
-        render: (text, row, index) => {
-          if (index < basicGoods.length) {
-            return <a href="">{text}</a>;
-          }
-          return {
-            children: <span style={{ fontWeight: 600 }}>总计</span>,
-            props: {
-              colSpan: 4,
+    if (sorter.field) {
+      params.sort = sorter.field;
+      params.order = sorter.order === 'descend' ? 'desc' : 'asc';
+    }
+
+    dispatch({
+      type: 'listUser/listUser',
+      payload: params,
+    });
+  };
+
+  handleGroupTableChange = (pagination, filtersArg, sorter) => {
+    const { dispatch, match } = this.props;
+    const userId = parseInt(match.params.id, 10);
+
+    const filters = Object.keys(filtersArg).reduce((obj, key) => {
+      const newObj = { ...obj };
+      newObj[key] = getValue(filtersArg[key]);
+      return newObj;
+    }, {});
+
+    const params = {
+      id: userId,
+      page: pagination.current,
+      limit: pagination.pageSize,
+      ...filters,
+    };
+
+    if (sorter.field) {
+      params.sort = sorter.field;
+      params.order = sorter.order === 'descend' ? 'desc' : 'asc';
+    }
+
+    dispatch({
+      type: 'userInfo/listGroup',
+      payload: params,
+    });
+  };
+
+  confirmGroupChange = () => {
+    const { dispatch, userInfo: { userInfo, targetGroup } } = this.props;
+    const { id } = userInfo;
+    dispatch({
+      type: 'userInfo/updateUserGroup',
+      payload: {
+        targetGroup,
+        id,
+      },
+    }).then(() => {
+      dispatch({
+        type: 'userInfo/listUserGroup',
+        payload: {
+          id,
+        },
+      });
+    });
+  };
+
+  removeUser = item => {
+    const { dispatch, match } = this.props;
+    const userId = parseInt(match.params.id, 10);
+    dispatch({
+      type: 'listUser/removeUser',
+      payload: {
+        id: `${item.id}`,
+      },
+    }).then(() => {
+      dispatch({
+        type: 'listUser/listUser',
+        payload: {
+          id: userId,
+        },
+      });
+      message.success('删除成功');
+    });
+  };
+
+  render() {
+    const {
+      teil: { userInfo, listGroup },
+      listUser: { listUser },
+      userInfoLoading,
+      userListLoading,
+    } = this.props;
+
+    const currentPageRole = stringRole(userInfo.role);
+
+    const breadcrumbList =
+      getAuthority() === 'admin'
+        ? [
+            {
+              title: '首页',
+              href: '/',
             },
-          };
-        },
-      },
+            {
+              title: '用户管理',
+              href: '/indexUser',
+            },
+            {
+              title: '用户详情',
+            },
+          ]
+        : [
+            {
+              title: '首页',
+              href: '/',
+            },
+            {
+              title: '用户管理',
+              href: '/listUser',
+            },
+            {
+              title: '用户详情',
+            },
+          ];
+
+    const myGroupColums = [
       {
-        title: '商品名称',
+        title: '组名称',
         dataIndex: 'name',
-        key: 'name',
-        render: renderContent,
       },
       {
-        title: '商品条码',
-        dataIndex: 'barcode',
-        key: 'barcode',
-        render: renderContent,
+        title: '备注',
+        dataIndex: 'remark',
       },
       {
-        title: '单价',
-        dataIndex: 'price',
-        key: 'price',
-        align: 'right',
-        render: renderContent,
+        title: '创建时间',
+        sorter: true,
+        dataIndex: 'created_at',
+        render: val => <span>{momentTime(val)}</span>,
       },
       {
-        title: '数量（件）',
-        dataIndex: 'num',
-        key: 'num',
-        align: 'right',
-        render: (text, row, index) => {
-          if (index < basicGoods.length) {
-            return text;
-          }
-          return <span style={{ fontWeight: 600 }}>{text}</span>;
-        },
-      },
-      {
-        title: '金额',
-        dataIndex: 'amount',
-        key: 'amount',
-        align: 'right',
-        render: (text, row, index) => {
-          if (index < basicGoods.length) {
-            return text;
-          }
-          return <span style={{ fontWeight: 600 }}>{text}</span>;
-        },
+        title: '操作',
+        dataIndex: 'createDate',
+        render: (row, item) => (
+          <Fragment>
+            <Link to={`/groupInfo/${item.id}`}>管理</Link>
+            <Divider type="vertical" />
+            <a href="">授权</a>
+            <Divider type="vertical" />
+            <Popconfirm
+              title="确认删除该群组吗？"
+              okText="Yes"
+              cancelText="No"
+              onConfirm={() => this.removeGroup(item)}
+            >
+              <a>删除</a>
+            </Popconfirm>
+          </Fragment>
+        ),
       },
     ];
 
     return (
-      <PageHeaderLayout title="基础详情页">
-        <Card bordered={false}>
-          <DescriptionList size="large" title="退款申请" style={{ marginBottom: 32 }}>
-            <Description term="取货单号">1000000000</Description>
-            <Description term="状态">已取货</Description>
-            <Description term="销售单号">1234123421</Description>
-            <Description term="子订单">3214321432</Description>
-          </DescriptionList>
-          <Divider style={{ marginBottom: 32 }} />
-          <DescriptionList size="large" title="用户信息" style={{ marginBottom: 32 }}>
-            <Description term="用户姓名">付小小</Description>
-            <Description term="联系电话">18100000000</Description>
-            <Description term="常用快递">菜鸟仓储</Description>
-            <Description term="取货地址">浙江省杭州市西湖区万塘路18号</Description>
-            <Description term="备注">无</Description>
-          </DescriptionList>
-          <Divider style={{ marginBottom: 32 }} />
-          <div className={styles.title}>退货商品</div>
-          <Table
-            style={{ marginBottom: 24 }}
-            pagination={false}
-            loading={loading}
-            dataSource={goodsData}
-            columns={goodsColumns}
-            rowKey="id"
+      <div>
+        <PageHeaderLayout title="用户详情" breadcrumbList={breadcrumbList} />
+        <Card style={{ marginTop: 24 }}>
+          <List
+            header={<div>基本信息</div>}
+            bordered
+            className={styles.list}
+            dataSource={[userInfo]}
+            loading={userInfoLoading}
+            renderItem={item => (
+              <List.Item>
+                <DescriptionList size="large" style={{ marginTop: 12 }}>
+                  <Description term="用户名">{item.name}</Description>
+                  <Description term="手机">{item.mobile}</Description>
+                  <Description term="邮箱">{item.email}</Description>
+                  <Description term="创建时间">{momentTime(item.created_at)}</Description>
+                  <Description term="备注">{item.remark}</Description>
+                </DescriptionList>
+              </List.Item>
+            )}
           />
-          <div className={styles.title}>退货进度</div>
-          <Table
-            style={{ marginBottom: 16 }}
-            pagination={false}
-            loading={loading}
-            dataSource={basicProgress}
-            columns={progressColumns}
-          />
+          {currentPageRole === 'admin' || currentPageRole === 'master' ? (
+            <List
+              header={
+                <div>
+                  我创建的群组
+                  <CreateGroup title="新建群组" onOk={values => this.createGroup(values)}>
+                    <button type="button" className={styles.operate}>
+                      新建群组
+                    </button>
+                  </CreateGroup>
+                </div>
+              }
+              bordered
+              className={styles.mySubuser}
+              dataSource={[1]}
+              loading={userListLoading}
+              renderItem={() => (
+                <List.Item>
+                  <StandardTable
+                    columns={myGroupColums}
+                    data={listGroup}
+                    rowKey={record => record.id}
+                    loading={userListLoading}
+                    onChange={this.handleGroupTableChange}
+                  />
+                </List.Item>
+              )}
+            />
+          ) : (
+            ''
+          )}
         </Card>
-      </PageHeaderLayout>
+      </div>
     );
   }
 }

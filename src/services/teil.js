@@ -9,6 +9,10 @@ export async function query(params) {
   return request(`/myapi/teil/pagedList?${stringify(params)}`);
 }
 
+export async function getTeil({ id }) {
+  return request(`/myapi/teil/${id}`);
+}
+
 export async function add(params) {
   return request('/myapi/teil', {
     method: 'POST',

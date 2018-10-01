@@ -26,6 +26,7 @@ import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 
 import styles from './ModellList.less';
 
+const { MonthPicker, RangePicker, WeekPicker } = DatePicker;
 const FormItem = Form.Item;
 const { Option } = Select;
 const getValue = obj =>
@@ -147,42 +148,42 @@ const CreateForm = Form.create({
           initialValue: isEdit
             ? editRecord.vffTime ? moment(editRecord.vffTime, 'YYYY-MM-DD HH:mm:ss') : ''
             : null,
-        })(<DatePicker placeholder="请输入" format="YYYY-MM-DD" />)}
+        })(<WeekPicker placeholder="请输入" format="YYYY-MM-DD" />)}
       </FormItem>
       <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 15 }} label="PVS时间">
         {form.getFieldDecorator('pvsTime', {
           initialValue: isEdit
             ? editRecord.pvsTime ? moment(editRecord.pvsTime, 'YYYY-MM-DD HH:mm:ss') : ''
             : null,
-        })(<DatePicker placeholder="请输入" format="YYYY-MM-DD" />)}
+        })(<WeekPicker placeholder="请输入" format="YYYY-MM-DD" />)}
       </FormItem>
       <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 15 }} label="0S TBT时间">
         {form.getFieldDecorator('osTbtTime', {
           initialValue: isEdit
             ? editRecord.osTbtTime ? moment(editRecord.osTbtTime, 'YYYY-MM-DD HH:mm:ss') : ''
             : null,
-        })(<DatePicker placeholder="请输入" format="YYYY-MM-DD" />)}
+        })(<WeekPicker placeholder="请输入" format="YYYY-MM-DD" />)}
       </FormItem>
       <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 15 }} label="0S时间">
         {form.getFieldDecorator('osTime', {
           initialValue: isEdit
             ? editRecord.osTime ? moment(editRecord.osTime, 'YYYY-MM-DD HH:mm:ss') : ''
             : null,
-        })(<DatePicker placeholder="请输入" format="YYYY-MM-DD" />)}
+        })(<WeekPicker placeholder="请输入" format="YYYY-MM-DD" />)}
       </FormItem>
       <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 15 }} label="SOP TBT时间">
         {form.getFieldDecorator('sopTbtTime', {
           initialValue: isEdit
             ? editRecord.sopTbtTime ? moment(editRecord.sopTbtTime, 'YYYY-MM-DD HH:mm:ss') : ''
             : null,
-        })(<DatePicker placeholder="请输入" format="YYYY-MM-DD" />)}
+        })(<WeekPicker placeholder="请输入" format="YYYY-MM-DD" />)}
       </FormItem>
       <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 15 }} label="SOP时间">
         {form.getFieldDecorator('sopTime', {
           initialValue: isEdit
             ? editRecord.sopTime ? moment(editRecord.sopTime, 'YYYY-MM-DD HH:mm:ss') : ''
             : null,
-        })(<DatePicker placeholder="请输入" format="YYYY-MM-DD" />)}
+        })(<WeekPicker placeholder="请输入" format="YYYY-MM-DD" />)}
       </FormItem>
       <FormItem
         labelCol={{ span: 8 }}
@@ -330,21 +331,29 @@ export default class ModellList extends PureComponent {
           payload: {
             ...fields,
             vffTime:
-              fields['vffTime'] === null ? null : fields['vffTime'].format('YYYY-MM-DD 00:00:01'),
+              !fields['vffTime'] || fields['vffTime'] === null
+                ? null
+                : fields['vffTime'].format('YYYY-MM-DD 00:00:01'),
             pvsTime:
-              fields['pvsTime'] === null ? null : fields['pvsTime'].format('YYYY-MM-DD 00:00:01'),
+              !fields['pvsTime'] || fields['pvsTime'] === null
+                ? null
+                : fields['pvsTime'].format('YYYY-MM-DD 00:00:01'),
             osTbtTime:
-              fields['osTbtTime'] === null
+              !fields['osTbtTime'] || fields['osTbtTime'] === null
                 ? null
                 : fields['osTbtTime'].format('YYYY-MM-DD 00:00:01'),
             osTime:
-              fields['osTime'] === null ? null : fields['osTime'].format('YYYY-MM-DD 00:00:01'),
+              !fields['osTime'] || fields['osTime'] === null
+                ? null
+                : fields['osTime'].format('YYYY-MM-DD 00:00:01'),
             sopTbtTime:
-              fields['sopTbtTime'] === null
+              !fields['sopTbtTime'] || fields['sopTbtTime'] === null
                 ? null
                 : fields['sopTbtTime'].format('YYYY-MM-DD 00:00:01'),
             sopTime:
-              fields['sopTime'] === null ? null : fields['sopTime'].format('YYYY-MM-DD 00:00:01'),
+              !fields['sopTime'] || fields['sopTime'] === null
+                ? null
+                : fields['sopTime'].format('YYYY-MM-DD 00:00:01'),
           },
         })
         .then(() => {

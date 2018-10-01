@@ -68,13 +68,19 @@ const CreateForm = Form.create({
   const aggregates = [];
   if (isEdit) {
     formTitle = '编辑零件';
-    const modellsLength = editRecord.modells.length;
+    let modellsLength = 0;
+    if (editRecord.modells) {
+      modellsLength = editRecord.modells.length;
+    }
     if (modellsLength > 0) {
       for (let i = 0; i < modellsLength; i += 1) {
         modells.push(editRecord.modells[i].name);
       }
     }
-    const aggregatesLength = editRecord.aggregates.length;
+    let aggregatesLength = 0;
+    if (editRecord.aggregates) {
+      aggregatesLength = editRecord.aggregates.length;
+    }
     if (aggregatesLength > 0) {
       for (let i = 0; i < aggregatesLength; i += 1) {
         aggregates.push(editRecord.aggregates[i].name);
@@ -528,6 +534,11 @@ export default class TeilList extends PureComponent {
         title: 'Benennung',
         dataIndex: 'name',
         sorter: true,
+        render: (row, item) => (
+          <Link to={`/teil/teil-profile/${item.id}`} style={{ color: 'rgba(0, 0, 0, 0.65)' }}>
+            {item.name}
+          </Link>
+        ),
       },
       {
         title: 'Lieferant',

@@ -1,7 +1,7 @@
-import { init, query, remove, add, update } from '../services/teil';
+import { init, query, remove, add, update } from '../services/teilschedule';
 
 export default {
-  namespace: 'teil',
+  namespace: 'teilschedule',
 
   state: {
     data: {
@@ -25,35 +25,16 @@ export default {
         payload: response,
       });
     },
-    *getOne({ payload }, { call, put }) {
-      const response = yield call(query, payload);
-      yield put({
-        type: 'save',
-        payload: response,
-      });
-    },
     *add({ payload, callback }, { call, put }) {
-      const response = yield call(add, payload);
-      // yield put({
-      //   type: 'save',
-      //   payload: response,
-      // });
+      yield call(add, payload);
       if (callback) callback();
     },
     *remove({ payload, callback }, { call, put }) {
-      const response = yield call(remove, payload);
-      // yield put({
-      //   type: 'save',
-      //   payload: response,
-      // });
+      yield call(remove, payload);
       if (callback) callback();
     },
     *update({ payload, callback }, { call, put }) {
-      const response = yield call(update, payload);
-      // yield put({
-      //   type: 'save',
-      //   payload: response,
-      // });
+      yield call(update, payload);
       if (callback) callback();
     },
   },

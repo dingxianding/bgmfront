@@ -72,6 +72,26 @@ export const getRouterData = app => {
     '/': {
       component: dynamicWrapper(app, ['user', 'login'], () => import('../layouts/BasicLayout')),
     },
+    '/teil/teil-list': {
+      component: dynamicWrapper(app, ['teil'], () => import('../routes/BMGSys/TeilList')),
+    },
+    '/teil/teil-schedule': {
+      component: dynamicWrapper(app, ['teilschedule'], () =>
+        import('../routes/BMGSys/TeilScheduleList')
+      ),
+    },
+    '/test/teil-test': {
+      component: dynamicWrapper(app, ['teil'], () => import('../routes/BMGSys/TeilList')),
+    },
+    '/modell/modell-list': {
+      component: dynamicWrapper(app, ['modell'], () => import('../routes/BMGSys/ModellList')),
+    },
+    '/user/user-list': {
+      component: dynamicWrapper(app, ['teil'], () => import('../routes/BMGSys/TeilList')),
+    },
+    '/teil/teil-profile/:id': {
+      component: dynamicWrapper(app, ['teil'], () => import('../routes/BMGSys/TeilProfile')),
+    },
     '/dashboard/analysis': {
       component: dynamicWrapper(app, ['chart'], () => import('../routes/Dashboard/Analysis')),
     },
@@ -173,12 +193,6 @@ export const getRouterData = app => {
     // },
     '/data/table-list': {
       component: dynamicWrapper(app, ['dataview'], () => import('../routes/Dataview/TableList')),
-    },
-    '/teil/teil-list': {
-      component: dynamicWrapper(app, ['teil'], () => import('../routes/BMGSys/TeilList')),
-    },
-    '/teil/modell-list': {
-      component: dynamicWrapper(app, ['modell'], () => import('../routes/BMGSys/ModellList')),
     },
   };
 
