@@ -1,7 +1,7 @@
-import React, { PureComponent, Fragment } from 'react';
-import { connect } from 'dva';
+import React, {PureComponent, Fragment} from 'react';
+import {connect} from 'dva';
 import moment from 'moment';
-import { Link } from 'dva/router';
+import {Link} from 'dva/router';
 import {
   Row,
   Col,
@@ -28,10 +28,10 @@ import Ellipsis from 'components/Ellipsis';
 
 import styles from './TeilScheduleList.less';
 
-const { MonthPicker, RangePicker, WeekPicker } = DatePicker;
+const {MonthPicker, RangePicker, WeekPicker} = DatePicker;
 const RadioGroup = Radio.Group;
 const FormItem = Form.Item;
-const { Option } = Select;
+const {Option} = Select;
 const getValue = obj =>
   Object.keys(obj)
     .map(key => obj[key])
@@ -46,7 +46,7 @@ const CreateForm = Form.create({
     };
   },
 })(props => {
-  const { modalVisible, form, handleAdd, handleModalVisible, teilList, isEdit, editRecord } = props;
+  const {modalVisible, form, handleAdd, handleModalVisible, teilList, isEdit, editRecord} = props;
   const teilChildren = [];
   let formTitle = '添加零件进度';
   if (isEdit) {
@@ -68,7 +68,7 @@ const CreateForm = Form.create({
     form.validateFields((err, fieldsValue) => {
       if (err) return;
       form.resetFields();
-      let params = { ...fieldsValue };
+      let params = {...fieldsValue};
       if (isEdit) {
         params = {
           isEdit,
@@ -86,13 +86,14 @@ const CreateForm = Form.create({
       onOk={okHandle}
       onCancel={() => handleModalVisible()}
     >
-      <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 15 }} label="零件编号">
+      <FormItem labelCol={{span: 8}} wrapperCol={{span: 15}} label="零件编号">
         {form.getFieldDecorator('teil', {
           initialValue: isEdit ? (editRecord.teil ? editRecord.teil.number : null) : null,
+          rules: [{required: true, message: '请选择零件'}],
         })(
           <Select
             showSearch
-            style={{ width: 150 }}
+            style={{width: 150}}
             placeholder="请选择"
             optionFilterProp="children"
             filterOption={(input, option) =>
@@ -103,178 +104,178 @@ const CreateForm = Form.create({
           </Select>
         )}
       </FormItem>
-      <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 15 }} label="询价资料时间">
+      <FormItem labelCol={{span: 8}} wrapperCol={{span: 15}} label="询价资料时间">
         {form.getFieldDecorator('anfragedatenTime', {
           initialValue: isEdit
             ? editRecord.anfragedatenTime
               ? moment(editRecord.anfragedatenTime, 'YYYY-MM-DD HH:mm:ss')
               : ''
             : null,
-        })(<WeekPicker placeholder="请输入" format="YYYY-MM-DD" />)}
+        })(<WeekPicker placeholder="请输入" format="YYYY-MM-DD"/>)}
       </FormItem>
-      <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 15 }} label="采购定点计划时间">
+      <FormItem labelCol={{span: 8}} wrapperCol={{span: 15}} label="采购定点计划时间">
         {form.getFieldDecorator('cscSollTime', {
           initialValue: isEdit
             ? editRecord.cscSollTime ? moment(editRecord.cscSollTime, 'YYYY-MM-DD HH:mm:ss') : ''
             : null,
-        })(<WeekPicker placeholder="请输入" format="YYYY-MM-DD" />)}
+        })(<WeekPicker placeholder="请输入" format="YYYY-MM-DD"/>)}
       </FormItem>
-      <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 15 }} label="采购定点实际时间">
+      <FormItem labelCol={{span: 8}} wrapperCol={{span: 15}} label="采购定点实际时间">
         {form.getFieldDecorator('cscIstTime', {
           initialValue: isEdit
             ? editRecord.cscIstTime ? moment(editRecord.cscIstTime, 'YYYY-MM-DD HH:mm:ss') : ''
             : null,
-        })(<WeekPicker placeholder="请输入" format="YYYY-MM-DD" />)}
+        })(<WeekPicker placeholder="请输入" format="YYYY-MM-DD"/>)}
       </FormItem>
-      <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 15 }} label="项目启动会计划时间">
+      <FormItem labelCol={{span: 8}} wrapperCol={{span: 15}} label="项目启动会计划时间">
         {form.getFieldDecorator('kickoffSollTime', {
           initialValue: isEdit
             ? editRecord.kickoffSollTime
               ? moment(editRecord.kickoffSollTime, 'YYYY-MM-DD HH:mm:ss')
               : ''
             : null,
-        })(<WeekPicker placeholder="请输入" format="YYYY-MM-DD" />)}
+        })(<WeekPicker placeholder="请输入" format="YYYY-MM-DD"/>)}
       </FormItem>
-      <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 15 }} label="项目启动会实际时间">
+      <FormItem labelCol={{span: 8}} wrapperCol={{span: 15}} label="项目启动会实际时间">
         {form.getFieldDecorator('kickoffIstTime', {
           initialValue: isEdit
             ? editRecord.kickoffIstTime
               ? moment(editRecord.kickoffIstTime, 'YYYY-MM-DD HH:mm:ss')
               : ''
             : null,
-        })(<WeekPicker placeholder="请输入" format="YYYY-MM-DD" />)}
+        })(<WeekPicker placeholder="请输入" format="YYYY-MM-DD"/>)}
       </FormItem>
-      <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 15 }} label="PAB编辑发送时间">
+      <FormItem labelCol={{span: 8}} wrapperCol={{span: 15}} label="PAB编辑发送时间">
         {form.getFieldDecorator('pabEditSendTime', {
           initialValue: isEdit
             ? editRecord.pabEditSendTime
               ? moment(editRecord.pabEditSendTime, 'YYYY-MM-DD HH:mm:ss')
               : ''
             : null,
-        })(<WeekPicker placeholder="请输入" format="YYYY-MM-DD" />)}
+        })(<WeekPicker placeholder="请输入" format="YYYY-MM-DD"/>)}
       </FormItem>
-      <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 15 }} label="PAB系统流转完成时间">
+      <FormItem labelCol={{span: 8}} wrapperCol={{span: 15}} label="PAB系统流转完成时间">
         {form.getFieldDecorator('pabFlowFinishTime', {
           initialValue: isEdit
             ? editRecord.pabFlowFinishTime
               ? moment(editRecord.pabFlowFinishTime, 'YYYY-MM-DD HH:mm:ss')
               : ''
             : null,
-        })(<WeekPicker placeholder="请输入" format="YYYY-MM-DD" />)}
+        })(<WeekPicker placeholder="请输入" format="YYYY-MM-DD"/>)}
       </FormItem>
-      <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 15 }} label="PAB费用反馈的时间">
+      <FormItem labelCol={{span: 8}} wrapperCol={{span: 15}} label="PAB费用反馈的时间">
         {form.getFieldDecorator('pabCostFeedbackTime', {
           initialValue: isEdit
             ? editRecord.pabCostFeedbackTime
               ? moment(editRecord.pabCostFeedbackTime, 'YYYY-MM-DD HH:mm:ss')
               : ''
             : null,
-        })(<WeekPicker placeholder="请输入" format="YYYY-MM-DD" />)}
+        })(<WeekPicker placeholder="请输入" format="YYYY-MM-DD"/>)}
       </FormItem>
-      <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 15 }} label="B-F计划时间">
+      <FormItem labelCol={{span: 8}} wrapperCol={{span: 15}} label="B-F计划时间">
         {form.getFieldDecorator('bfSollTime', {
           initialValue: isEdit
             ? editRecord.bfSollTime ? moment(editRecord.bfSollTime, 'YYYY-MM-DD HH:mm:ss') : ''
             : null,
-        })(<WeekPicker placeholder="请输入" format="YYYY-MM-DD" />)}
+        })(<WeekPicker placeholder="请输入" format="YYYY-MM-DD"/>)}
       </FormItem>
-      <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 15 }} label="B-F实际时间">
+      <FormItem labelCol={{span: 8}} wrapperCol={{span: 15}} label="B-F实际时间">
         {form.getFieldDecorator('bfIstTime', {
           initialValue: isEdit
             ? editRecord.bfIstTime ? moment(editRecord.bfIstTime, 'YYYY-MM-DD HH:mm:ss') : ''
             : null,
-        })(<WeekPicker placeholder="请输入" format="YYYY-MM-DD" />)}
+        })(<WeekPicker placeholder="请输入" format="YYYY-MM-DD"/>)}
       </FormItem>
-      <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 15 }} label="首模件实际时间">
+      <FormItem labelCol={{span: 8}} wrapperCol={{span: 15}} label="首模件实际时间">
         {form.getFieldDecorator('firstTryoutIstTime', {
           initialValue: isEdit
             ? editRecord.firstTryoutIstTime
               ? moment(editRecord.firstTryoutIstTime, 'YYYY-MM-DD HH:mm:ss')
               : ''
             : null,
-        })(<WeekPicker placeholder="请输入" format="YYYY-MM-DD" />)}
+        })(<WeekPicker placeholder="请输入" format="YYYY-MM-DD"/>)}
       </FormItem>
-      <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 15 }} label="批量件计划时间">
+      <FormItem labelCol={{span: 8}} wrapperCol={{span: 15}} label="批量件计划时间">
         {form.getFieldDecorator('otsSollTime', {
           initialValue: isEdit
             ? editRecord.otsSollTime ? moment(editRecord.otsSollTime, 'YYYY-MM-DD HH:mm:ss') : ''
             : null,
-        })(<WeekPicker placeholder="请输入" format="YYYY-MM-DD" />)}
+        })(<WeekPicker placeholder="请输入" format="YYYY-MM-DD"/>)}
       </FormItem>
-      <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 15 }} label="批量件实际时间">
+      <FormItem labelCol={{span: 8}} wrapperCol={{span: 15}} label="批量件实际时间">
         {form.getFieldDecorator('otsIstTime', {
           initialValue: isEdit
             ? editRecord.otsIstTime ? moment(editRecord.otsIstTime, 'YYYY-MM-DD HH:mm:ss') : ''
             : null,
-        })(<WeekPicker placeholder="请输入" format="YYYY-MM-DD" />)}
+        })(<WeekPicker placeholder="请输入" format="YYYY-MM-DD"/>)}
       </FormItem>
-      <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 15 }} label="Aeko/AeA发生编号">
+      <FormItem labelCol={{span: 8}} wrapperCol={{span: 15}} label="Aeko/AeA发生编号">
         {form.getFieldDecorator('einsatzNum', {
           initialValue: isEdit ? editRecord.einsatzNum : null,
-        })(<Input placeholder="请输入" />)}
+        })(<Input placeholder="请输入"/>)}
       </FormItem>
-      <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 15 }} label="Aeko/AeA取消编号">
+      <FormItem labelCol={{span: 8}} wrapperCol={{span: 15}} label="Aeko/AeA取消编号">
         {form.getFieldDecorator('entfallNum', {
           initialValue: isEdit ? editRecord.entfallNum : null,
-        })(<Input placeholder="请输入" />)}
+        })(<Input placeholder="请输入"/>)}
       </FormItem>
-      <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 15 }} label="BMG计划时间">
+      <FormItem labelCol={{span: 8}} wrapperCol={{span: 15}} label="BMG计划时间">
         {form.getFieldDecorator('bmgSollTime', {
           initialValue: isEdit
             ? editRecord.bmgSollTime ? moment(editRecord.bmgSollTime, 'YYYY-MM-DD HH:mm:ss') : ''
             : null,
-        })(<WeekPicker placeholder="请输入" format="YYYY-MM-DD" />)}
+        })(<WeekPicker placeholder="请输入" format="YYYY-MM-DD"/>)}
       </FormItem>
-      <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 15 }} label="BMG实际时间">
+      <FormItem labelCol={{span: 8}} wrapperCol={{span: 15}} label="BMG实际时间">
         {form.getFieldDecorator('bmgIstTime', {
           initialValue: isEdit
             ? editRecord.bmgIstTime ? moment(editRecord.bmgIstTime, 'YYYY-MM-DD HH:mm:ss') : ''
             : null,
-        })(<WeekPicker placeholder="请输入" format="YYYY-MM-DD" />)}
+        })(<WeekPicker placeholder="请输入" format="YYYY-MM-DD"/>)}
       </FormItem>
-      <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 15 }} label="BMG-EMP计划时间">
+      <FormItem labelCol={{span: 8}} wrapperCol={{span: 15}} label="BMG-EMP计划时间">
         {form.getFieldDecorator('bmgEmpSollTime', {
           initialValue: isEdit
             ? editRecord.bmgEmpSollTime
               ? moment(editRecord.bmgEmpSollTime, 'YYYY-MM-DD HH:mm:ss')
               : ''
             : null,
-        })(<WeekPicker placeholder="请输入" format="YYYY-MM-DD" />)}
+        })(<WeekPicker placeholder="请输入" format="YYYY-MM-DD"/>)}
       </FormItem>
-      <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 15 }} label="BMG-EMP实际时间">
+      <FormItem labelCol={{span: 8}} wrapperCol={{span: 15}} label="BMG-EMP实际时间">
         {form.getFieldDecorator('bmgEmpIstTime', {
           initialValue: isEdit
             ? editRecord.bmgEmpIstTime
               ? moment(editRecord.bmgEmpIstTime, 'YYYY-MM-DD HH:mm:ss')
               : ''
             : null,
-        })(<WeekPicker placeholder="请输入" format="YYYY-MM-DD" />)}
+        })(<WeekPicker placeholder="请输入" format="YYYY-MM-DD"/>)}
       </FormItem>
-      <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 15 }} label="BMG-ONLINE编号">
+      <FormItem labelCol={{span: 8}} wrapperCol={{span: 15}} label="BMG-ONLINE编号">
         {form.getFieldDecorator('bmgOnlineNum', {
           initialValue: isEdit ? editRecord.bmgOnlineNum : null,
-        })(<Input placeholder="请输入" />)}
+        })(<Input placeholder="请输入"/>)}
       </FormItem>
-      <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 15 }} label="FE54计划时间">
+      <FormItem labelCol={{span: 8}} wrapperCol={{span: 15}} label="FE54计划时间">
         {form.getFieldDecorator('fe54SollTime', {
           initialValue: isEdit
             ? editRecord.fe54SollTime ? moment(editRecord.fe54SollTime, 'YYYY-MM-DD HH:mm:ss') : ''
             : null,
-        })(<WeekPicker placeholder="请输入" format="YYYY-MM-DD" />)}
+        })(<WeekPicker placeholder="请输入" format="YYYY-MM-DD"/>)}
       </FormItem>
-      <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 15 }} label="FE54实际时间">
+      <FormItem labelCol={{span: 8}} wrapperCol={{span: 15}} label="FE54实际时间">
         {form.getFieldDecorator('fe54IstTime', {
           initialValue: isEdit
             ? editRecord.fe54IstTime ? moment(editRecord.fe54IstTime, 'YYYY-MM-DD HH:mm:ss') : ''
             : null,
-        })(<WeekPicker placeholder="请输入" format="YYYY-MM-DD" />)}
+        })(<WeekPicker placeholder="请输入" format="YYYY-MM-DD"/>)}
       </FormItem>
-      <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 15 }} label="备注">
+      <FormItem labelCol={{span: 8}} wrapperCol={{span: 15}} label="备注">
         {form.getFieldDecorator('remark', {
           initialValue: isEdit ? editRecord.remark : null,
-        })(<Input placeholder="请输入" />)}
+        })(<Input placeholder="请输入"/>)}
       </FormItem>
-      <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 15 }} label="是否沿用">
+      <FormItem labelCol={{span: 8}} wrapperCol={{span: 15}} label="是否沿用">
         {form.getFieldDecorator('ifCop', {
           initialValue: isEdit ? editRecord.ifCop : true,
         })(
@@ -288,7 +289,7 @@ const CreateForm = Form.create({
   );
 });
 
-@connect(({ teilschedule, loading }) => ({
+@connect(({teilschedule, loading}) => ({
   teilschedule,
   loading: loading.models.teilschedule,
 }))
@@ -301,11 +302,11 @@ export default class TeilScheduleList extends PureComponent {
     formValues: {},
     isEdit: false, // MODAL框判断，是添加还是修改
     editRecord: {}, // 要编辑的内容
-    teilList: [], // 所有的排放阶段，为绑定select用的
+    teilList: [], // 所有的零件，为绑定select用的
   };
 
   componentDidMount() {
-    const { dispatch } = this.props;
+    const {dispatch} = this.props;
 
     const params = {
       // currentPage: 1,
@@ -319,11 +320,11 @@ export default class TeilScheduleList extends PureComponent {
   }
 
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
-    const { dispatch } = this.props;
-    const { formValues } = this.state;
+    const {dispatch} = this.props;
+    const {formValues} = this.state;
 
     const filters = Object.keys(filtersArg).reduce((obj, key) => {
-      const newObj = { ...obj };
+      const newObj = {...obj};
       newObj[key] = getValue(filtersArg[key]);
       return newObj;
     }, {});
@@ -345,7 +346,7 @@ export default class TeilScheduleList extends PureComponent {
   };
 
   handleFormReset = () => {
-    const { form, dispatch } = this.props;
+    const {form, dispatch} = this.props;
     form.resetFields();
     this.setState({
       formValues: {},
@@ -365,7 +366,7 @@ export default class TeilScheduleList extends PureComponent {
   handleSearch = e => {
     e.preventDefault();
 
-    const { dispatch, form } = this.props;
+    const {dispatch, form} = this.props;
 
     form.validateFields((err, fieldsValue) => {
       if (err) return;
@@ -593,18 +594,18 @@ export default class TeilScheduleList extends PureComponent {
   };
 
   renderSimpleForm() {
-    const { getFieldDecorator } = this.props.form;
+    const {getFieldDecorator} = this.props.form;
     return (
       <Form onSubmit={this.handleSearch} layout="inline">
-        <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
+        <Row gutter={{md: 8, lg: 24, xl: 48}}>
           <Col md={8} sm={24}>
             <FormItem label="Teil Nr.">
-              {getFieldDecorator('number')(<Input placeholder="请输入" />)}
+              {getFieldDecorator('number')(<Input placeholder="请输入"/>)}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
             <FormItem label="Benennung">
-              {getFieldDecorator('name')(<Input placeholder="请输入" />)}
+              {getFieldDecorator('name')(<Input placeholder="请输入"/>)}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
@@ -612,11 +613,11 @@ export default class TeilScheduleList extends PureComponent {
               <Button type="primary" htmlType="submit">
                 查询
               </Button>
-              <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>
+              <Button style={{marginLeft: 8}} onClick={this.handleFormReset}>
                 重置
               </Button>
-              <a style={{ marginLeft: 8, display: 'none' }} onClick={this.toggleForm}>
-                展开 <Icon type="down" />
+              <a style={{marginLeft: 8, display: 'none'}} onClick={this.toggleForm}>
+                展开 <Icon type="down"/>
               </a>
             </span>
           </Col>
@@ -626,19 +627,19 @@ export default class TeilScheduleList extends PureComponent {
   }
 
   renderAdvancedForm() {
-    const { getFieldDecorator } = this.props.form;
+    const {getFieldDecorator} = this.props.form;
     return (
       <Form onSubmit={this.handleSearch} layout="inline">
-        <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
+        <Row gutter={{md: 8, lg: 24, xl: 48}}>
           <Col md={8} sm={24}>
             <FormItem label="规则编号">
-              {getFieldDecorator('no')(<Input placeholder="请输入" />)}
+              {getFieldDecorator('no')(<Input placeholder="请输入"/>)}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
             <FormItem label="使用状态">
               {getFieldDecorator('status')(
-                <Select placeholder="请选择" style={{ width: '100%' }}>
+                <Select placeholder="请选择" style={{width: '100%'}}>
                   <Option value="0">关闭</Option>
                   <Option value="1">运行中</Option>
                 </Select>
@@ -647,22 +648,22 @@ export default class TeilScheduleList extends PureComponent {
           </Col>
           <Col md={8} sm={24}>
             <FormItem label="调用次数">
-              {getFieldDecorator('number')(<InputNumber style={{ width: '100%' }} />)}
+              {getFieldDecorator('number')(<InputNumber style={{width: '100%'}}/>)}
             </FormItem>
           </Col>
         </Row>
-        <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
+        <Row gutter={{md: 8, lg: 24, xl: 48}}>
           <Col md={8} sm={24}>
             <FormItem label="更新日期">
               {getFieldDecorator('date')(
-                <DatePicker style={{ width: '100%' }} placeholder="请输入更新日期" />
+                <DatePicker style={{width: '100%'}} placeholder="请输入更新日期"/>
               )}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
             <FormItem label="使用状态">
               {getFieldDecorator('status3')(
-                <Select placeholder="请选择" style={{ width: '100%' }}>
+                <Select placeholder="请选择" style={{width: '100%'}}>
                   <Option value="0">关闭</Option>
                   <Option value="1">运行中</Option>
                 </Select>
@@ -672,7 +673,7 @@ export default class TeilScheduleList extends PureComponent {
           <Col md={8} sm={24}>
             <FormItem label="使用状态">
               {getFieldDecorator('status4')(
-                <Select placeholder="请选择" style={{ width: '100%' }}>
+                <Select placeholder="请选择" style={{width: '100%'}}>
                   <Option value="0">关闭</Option>
                   <Option value="1">运行中</Option>
                 </Select>
@@ -680,16 +681,16 @@ export default class TeilScheduleList extends PureComponent {
             </FormItem>
           </Col>
         </Row>
-        <div style={{ overflow: 'hidden' }}>
-          <span style={{ float: 'right', marginBottom: 24 }}>
+        <div style={{overflow: 'hidden'}}>
+          <span style={{float: 'right', marginBottom: 24}}>
             <Button type="primary" htmlType="submit">
               查询
             </Button>
-            <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>
+            <Button style={{marginLeft: 8}} onClick={this.handleFormReset}>
               重置
             </Button>
-            <a style={{ marginLeft: 8 }} onClick={this.toggleForm}>
-              收起 <Icon type="up" />
+            <a style={{marginLeft: 8}} onClick={this.toggleForm}>
+              收起 <Icon type="up"/>
             </a>
           </span>
         </div>
@@ -702,7 +703,7 @@ export default class TeilScheduleList extends PureComponent {
   }
 
   remove = record => {
-    const { dispatch } = this.props;
+    const {dispatch} = this.props;
     dispatch({
       type: 'teilschedule/remove',
       payload: {
@@ -717,8 +718,8 @@ export default class TeilScheduleList extends PureComponent {
   };
 
   render() {
-    const { teilschedule: { data }, loading } = this.props;
-    const { modalVisible, teilList, isEdit, editRecord } = this.state;
+    const {teilschedule: {data}, loading} = this.props;
+    const {modalVisible, teilList, isEdit, editRecord} = this.state;
 
     const columns = [
       {
@@ -859,7 +860,6 @@ export default class TeilScheduleList extends PureComponent {
         dataIndex: 'ifCop',
         render: val => <span>{val ? '是' : '否'}</span>,
       },
-
       {
         title: '录入时间',
         dataIndex: 'inTime',
@@ -877,7 +877,7 @@ export default class TeilScheduleList extends PureComponent {
         render: record => (
           <Fragment>
             <a onClick={() => this.handleEditModalVisible(record, true)}>编辑</a>
-            <Divider type="vertical" />
+            <Divider type="vertical"/>
             <Popconfirm
               title="删除该零件进度信息？"
               okText="是"
@@ -925,12 +925,12 @@ export default class TeilScheduleList extends PureComponent {
               columns={columns}
               onSelectRow={this.handleSelectRows}
               onChange={this.handleStandardTableChange}
-              scroll={{ x: 3600 }}
+              scroll={{x: 3600}}
             />
           </div>
         </Card>
 
-        <CreateForm {...parentMethods} {...parentFields} modalVisible={modalVisible} />
+        <CreateForm {...parentMethods} {...parentFields} modalVisible={modalVisible}/>
       </PageHeaderLayout>
     );
   }

@@ -1,6 +1,7 @@
 import {Upload, Button, Icon} from 'antd';
 
 //要限制只添加一个文件的话，就要用这个组件
+//还没有写完
 class MyUpload extends React.Component {
   state = {
     fileList: [{

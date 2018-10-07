@@ -35,6 +35,7 @@ const getValue = obj =>
   Object.keys(obj)
     .map(key => obj[key])
     .join(',');
+const UrlHead = 'http://localhost:18080/download/';
 
 const CreateForm = Form.create({
   mapPropsToFields(props) {
@@ -237,7 +238,7 @@ const CreateForm = Form.create({
         })(
           <Upload {...fileProps}>
             <Button>
-              <Icon type="upload"/> 上传
+              <Icon type="upload"/> 选择文件
             </Button>
           </Upload>
         )}
@@ -462,7 +463,7 @@ export default class ModellList extends PureComponent {
     }
     else
       return null;
-  }
+  };
 
   beforeUpload = file => {
     const isLt20M = file.size / 1024 / 1024 < 20;
@@ -470,7 +471,7 @@ export default class ModellList extends PureComponent {
       message.error('文件必须小于20MB!');
     }
     return isLt20M;
-  }
+  };
 
   renderSimpleForm() {
     const {getFieldDecorator} = this.props.form;
@@ -548,7 +549,7 @@ export default class ModellList extends PureComponent {
         </Row>
       </Form>
     );
-  }
+  };
 
   renderAdvancedForm() {
     const {getFieldDecorator} = this.props.form;
@@ -712,10 +713,24 @@ export default class ModellList extends PureComponent {
         title: '跑车数量（SWP/SVP/SPH/4KZ）',
         dataIndex: 'runCount',
       },
-      // {
-      //   title: '跑车计划',
-      //   dataIndex: 'runPlan',
-      // },
+      {
+        title: '跑车计划',
+        dataIndex: 'runPlan',
+        render: (val, row, index) => {
+          const runPlan = row.runPlan;
+          let result = [];
+          if (runPlan && runPlan.length > 0) {
+            for (let i = 0; i < runPlan.length; i++) {
+              const url = `${UrlHead}${runPlan[i].id}`;
+              result.push(<a href={url}>{runPlan[i].name}</a>);
+              if (i !== runPlan.length - 1) {
+                result.push(<Divider type="vertical"/>);
+              }
+            }
+          }
+          return result;
+        },
+      },
       {
         title: '描述',
         dataIndex: 'description',

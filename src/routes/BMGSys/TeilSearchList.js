@@ -36,246 +36,18 @@ const bezugsart = ['CKD', 'LC'];
 const statusMap = ['default', 'processing', 'success', 'error'];
 const status = ['询价阶段', 'BMG认可中', 'BMG完成', '异常'];
 
-const CreateForm = Form.create({
-  mapPropsToFields(props) {
-    return {
-      abgasstufeList: Form.createFormField({
-        ...props.abgasstufeList,
-      }),
-      modellList: Form.createFormField({
-        ...props.modellList,
-      }),
-      aggregateList: Form.createFormField({
-        ...props.aggregateList,
-      }),
-    };
-  },
-})(props => {
-  const {
-    modalVisible,
-    form,
-    handleAdd,
-    handleModalVisible,
-    abgasstufeList,
-    modellList,
-    aggregateList,
-    isEdit,
-    editRecord,
-  } = props;
-  const bezugsartChildren = [];// 供货状态
-  const statusChildren = [];// 状态
-  const abgasstufeChildren = [];// 排放阶段
-  const modellChildren = [];// 车型
-  const aggregateChildren = [];// 动力总成
-  let formTitle = '添加零件';
-  const modells = [];
-  const aggregates = [];
-  if (isEdit) {
-    formTitle = '编辑零件';
-    let modellsLength = 0;
-    if (editRecord.modells) {
-      modellsLength = editRecord.modells.length;
-    }
-    if (modellsLength > 0) {
-      for (let i = 0; i < modellsLength; i += 1) {
-        modells.push(editRecord.modells[i].name);
-      }
-    }
-    let aggregatesLength = 0;
-    if (editRecord.aggregates) {
-      aggregatesLength = editRecord.aggregates.length;
-    }
-    if (aggregatesLength > 0) {
-      for (let i = 0; i < aggregatesLength; i += 1) {
-        aggregates.push(editRecord.aggregates[i].name);
-      }
-    }
-  }
-
-  // 供货状态
-  for (let i = 0; i < bezugsart.length; i += 1) {
-    bezugsartChildren.push(
-      <Option value={i}>
-        {bezugsart[i]}
-      </Option>
-    );
-  }
-
-  // 状态
-  for (let i = 0; i < status.length; i += 1) {
-    statusChildren.push(
-      <Option value={i}>
-        {status[i]}
-      </Option>
-    );
-  }
-
-  if (abgasstufeList && abgasstufeList.length > 0) {
-    // 排放阶段
-    for (let i = 0; i < abgasstufeList.length; i += 1) {
-      abgasstufeChildren.push(
-        <Option key={abgasstufeList[i].id} value={abgasstufeList[i].name}>
-          {abgasstufeList[i].name}
-        </Option>
-      );
-    }
-
-    // 车型
-    for (let i = 0; i < modellList.length; i += 1) {
-      modellChildren.push(
-        <Option key={modellList[i].id} value={modellList[i].name}>
-          {modellList[i].name}
-        </Option>
-      );
-    }
-
-    // 动力总成
-    for (let i = 0; i < aggregateList.length; i += 1) {
-      aggregateChildren.push(
-        <Option key={aggregateList[i].id} value={aggregateList[i].name}>
-          {aggregateList[i].name}
-        </Option>
-      );
-    }
-  }
-
-  const okHandle = () => {
-    form.validateFields((err, fieldsValue) => {
-      if (err) return;
-      form.resetFields();
-      let params = {...fieldsValue};
-      if (isEdit) {
-        params = {
-          isEdit,
-          id: editRecord.id,
-          ...fieldsValue,
-        };
-      }
-      handleAdd(params);
-    });
-  };
-  return (
-    <Modal
-      title={formTitle}
-      visible={modalVisible}
-      onOk={okHandle}
-      onCancel={() => handleModalVisible()}
-    >
-      <FormItem labelCol={{span: 8}} wrapperCol={{span: 15}} label="Teil Nr.">
-        {form.getFieldDecorator('number', {
-          initialValue: isEdit ? editRecord.number : null,
-          rules: [{required: true, message: '请输入Teil Nr.'}],
-        })(<Input placeholder="请输入"/>)}
-      </FormItem>
-      <FormItem labelCol={{span: 8}} wrapperCol={{span: 15}} label="Benennung">
-        {form.getFieldDecorator('name', {
-          initialValue: isEdit ? editRecord.name : null,
-          rules: [{required: true, message: '请输入Benennung'}],
-        })(<Input placeholder="请输入"/>)}
-      </FormItem>
-      <FormItem labelCol={{span: 8}} wrapperCol={{span: 15}} label="状态">
-        {form.getFieldDecorator('status', {initialValue: isEdit ? editRecord.status : null})(
-          <Select style={{width: 150}}>
-            {statusChildren}
-          </Select>
-        )}
-      </FormItem>
-      <FormItem labelCol={{span: 8}} wrapperCol={{span: 15}} label="Lieferant">
-        {form.getFieldDecorator('lieferant', {
-          initialValue: isEdit ? editRecord.lieferant : null,
-        })(<Input placeholder="请输入"/>)}
-      </FormItem>
-      <FormItem labelCol={{span: 8}} wrapperCol={{span: 15}} label="Bezugsart">
-        {form.getFieldDecorator('bezugsart', {initialValue: isEdit ? parseInt(editRecord.bezugsart) : null})(
-          <Select style={{width: 120}}>
-            {bezugsartChildren}
-          </Select>
-        )}
-      </FormItem>
-      <FormItem labelCol={{span: 8}} wrapperCol={{span: 15}} label="Abgasstufe">
-        {form.getFieldDecorator('abgasstufe', {
-          initialValue: isEdit ? (editRecord.abgasstufe ? editRecord.abgasstufe.name : null) : null,
-        })(
-          <Select
-            showSearch
-            style={{width: 150}}
-            placeholder="请选择"
-            optionFilterProp="children"
-            filterOption={(input, option) =>
-              option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-            }
-          >
-            {abgasstufeChildren}
-          </Select>
-        )}
-      </FormItem>
-      <FormItem labelCol={{span: 8}} wrapperCol={{span: 15}} label="Ersteinsatz Modell">
-        {form.getFieldDecorator('erstModell', {
-          initialValue: isEdit ? (editRecord.erstModell ? editRecord.erstModell.name : null) : null,
-        })(
-          <Select
-            showSearch
-            style={{width: 150}}
-            placeholder="请选择"
-            optionFilterProp="children"
-            filterOption={(input, option) =>
-              option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-            }
-          >
-            {modellChildren}
-          </Select>
-        )}
-      </FormItem>
-      <FormItem labelCol={{span: 8}} wrapperCol={{span: 15}} label="Ersteinsatz Aggregate">
-        {form.getFieldDecorator('erstAggregate', {
-          initialValue: isEdit
-            ? editRecord.erstAggregate ? editRecord.erstAggregate.name : null
-            : null,
-        })(
-          <Select
-            showSearch
-            style={{width: 150}}
-            placeholder="请选择"
-            optionFilterProp="children"
-            filterOption={(input, option) =>
-              option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-            }
-          >
-            {aggregateChildren}
-          </Select>
-        )}
-      </FormItem>
-      <FormItem labelCol={{span: 8}} wrapperCol={{span: 15}} label="Fzg. Modell">
-        {form.getFieldDecorator('modells', {initialValue: isEdit ? modells : []})(
-          <Select mode="multiple" style={{width: 300}} placeholder="请选择">
-            {modellChildren}
-          </Select>
-        )}
-      </FormItem>
-      <FormItem labelCol={{span: 8}} wrapperCol={{span: 15}} label="Fzg. Aggregate">
-        {form.getFieldDecorator('aggregates', {initialValue: isEdit ? aggregates : []})(
-          <Select mode="multiple" style={{width: 300}} placeholder="请选择">
-            {aggregateChildren}
-          </Select>
-        )}
-      </FormItem>
-    </Modal>
-  );
-});
 
 @connect(({teil, loading}) => ({
   teil,
   loading: loading.models.teil,
 }))
 @Form.create()
-export default class TeilList extends PureComponent {
+export default class TeilSearchList extends PureComponent {
   state = {
     modalVisible: false,
     expandForm: false,
     selectedRows: [],
     formValues: {},
-    isEdit: false, // MODAL框判断，是添加还是修改
-    editRecord: {}, // 要编辑的内容
     abgasstufeList: [], // 所有的排放阶段，为绑定select用的
     modellList: [], // 所有的车型，为绑定select用的
     aggregateList: [], // 所有的动力总成，为绑定select用的
@@ -363,62 +135,36 @@ export default class TeilList extends PureComponent {
     });
   };
 
-  handleModalVisible = flag => {
-    this.setState({
-      isEdit: false,
-      modalVisible: !!flag,
-    });
-  };
-
-  handleEditModalVisible = (record, flag) => {
-    this.setState({
-      editRecord: record,
-      isEdit: true,
-      modalVisible: !!flag,
-    });
-  };
-
-  // 添加或者更新
-  handleAdd = fields => {
-    if (fields.isEdit) {
-      this.props
-        .dispatch({
-          type: 'teil/update',
-          payload: {
-            ...fields,
-          },
-        })
-        .then(() => {
-          this.props.dispatch({
-            type: 'teil/fetch',
-            payload: {},
-          });
-          message.success('编辑成功');
-        });
-    } else {
-      this.props
-        .dispatch({
-          type: 'teil/add',
-          payload: {
-            ...fields,
-          },
-        })
-        .then(() => {
-          this.props.dispatch({
-            type: 'teil/fetch',
-            payload: {},
-          });
-          message.success('添加成功');
-        });
-    }
-
-    this.setState({
-      modalVisible: false,
-    });
-  };
-
   renderSimpleForm() {
     const {getFieldDecorator} = this.props.form;
+    const {
+      modellList,
+      aggregateList,
+    } = this.state;
+
+    const modellChildren = [];// 车型
+    const aggregateChildren = [];// 动力总成
+
+    if (modellList && modellList.length > 0) {
+      // 车型
+      for (let i = 0; i < modellList.length; i += 1) {
+        modellChildren.push(
+          <Option key={modellList[i].id} value={modellList[i].name}>
+            {modellList[i].name}
+          </Option>
+        );
+      }
+
+      // 动力总成
+      for (let i = 0; i < aggregateList.length; i += 1) {
+        aggregateChildren.push(
+          <Option key={aggregateList[i].id} value={aggregateList[i].name}>
+            {aggregateList[i].name}
+          </Option>
+        );
+      }
+    }
+
     return (
       <Form onSubmit={this.handleSearch} layout="inline">
         <Row gutter={{md: 8, lg: 24, xl: 48}}>
@@ -430,6 +176,45 @@ export default class TeilList extends PureComponent {
           <Col md={8} sm={24}>
             <FormItem label="Benennung">
               {getFieldDecorator('name')(<Input placeholder="请输入"/>)}
+            </FormItem>
+          </Col>
+          <Col md={8} sm={24}>
+            <FormItem label="Fzg. Modell">
+              {getFieldDecorator('modell')(
+                <Select
+                  showSearch
+                  style={{width: 150}}
+                  placeholder="请选择"
+                  optionFilterProp="children"
+                  filterOption={(input, option) =>
+                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                  }
+                >
+                  {modellChildren}
+                </Select>)}
+            </FormItem>
+          </Col>
+        </Row>
+        <Row gutter={{md: 8, lg: 24, xl: 48}}>
+          <Col md={8} sm={24}>
+            <FormItem label="Fzg. Aggregate">
+              {getFieldDecorator('aggregate')(
+                <Select
+                  showSearch
+                  style={{width: 150}}
+                  placeholder="请选择"
+                  optionFilterProp="children"
+                  filterOption={(input, option) =>
+                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                  }
+                >
+                  {aggregateChildren}
+                </Select>)}
+            </FormItem>
+          </Col>
+          <Col md={8} sm={24}>
+            <FormItem label="FOP/MOP">
+              {getFieldDecorator('fop')(<Input placeholder="请输入"/>)}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
@@ -526,30 +311,12 @@ export default class TeilList extends PureComponent {
     return this.state.expandForm ? this.renderSimpleForm() : this.renderSimpleForm();
   }
 
-  remove = record => {
-    const {dispatch} = this.props;
-    dispatch({
-      type: 'teil/remove',
-      payload: {
-        id: `${record.id}`,
-      },
-    }).then(() => {
-      dispatch({
-        type: 'teil/fetch',
-      });
-      message.success('删除成功');
-    });
-  };
-
   render() {
     const {teil: {data}, loading} = this.props;
     const {
-      modalVisible,
       abgasstufeList,
       modellList,
       aggregateList,
-      isEdit,
-      editRecord,
     } = this.state;
 
     const columns = [
@@ -691,56 +458,21 @@ export default class TeilList extends PureComponent {
         sorter: true,
         render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
       },
-      {
-        title: '操作',
-        render: record => (
-          <Fragment>
-            <a onClick={() => this.handleEditModalVisible(record, true)}>编辑</a>
-            <Divider type="vertical"/>
-            <Popconfirm
-              title="将删除该零件所有相关信息，确认删除？"
-              okText="是"
-              cancelText="否"
-              onConfirm={() => this.remove(record)}
-            >
-              <a>删除</a>
-            </Popconfirm>
-          </Fragment>
-        ),
-      },
     ];
 
-    // createForm所需的数据和方法
-    //三个选择框
-    let parentFields = {};
-    if (data && data.abgasstufeList && data.abgasstufeList.length > 0) {
+    if (data && data.modellList && data.modellList.length > 0) {
       this.setState({
         abgasstufeList: data.abgasstufeList,
         modellList: data.modellList,
         aggregateList: data.aggregateList,
       });
     }
-    parentFields.abgasstufeList = abgasstufeList;
-    parentFields.modellList = modellList;
-    parentFields.aggregateList = aggregateList;
-    parentFields.isEdit = isEdit;
-    parentFields.editRecord = editRecord;
-
-    const parentMethods = {
-      handleAdd: this.handleAdd,
-      handleModalVisible: this.handleModalVisible,
-    };
 
     return (
-      <PageHeaderLayout title="基础信息管理">
+      <PageHeaderLayout title="零部件查询">
         <Card bordered={false}>
           <div className={styles.tableList}>
             <div className={styles.tableListForm}>{this.renderForm()}</div>
-            <div className={styles.tableListOperator}>
-              <Button icon="plus" type="primary" onClick={() => this.handleModalVisible(true)}>
-                添加零件
-              </Button>
-            </div>
             <MyTable
               rowKey={record => record.id}
               loading={loading}
@@ -752,8 +484,6 @@ export default class TeilList extends PureComponent {
             />
           </div>
         </Card>
-
-        <CreateForm {...parentMethods} {...parentFields} modalVisible={modalVisible}/>
       </PageHeaderLayout>
     );
   }

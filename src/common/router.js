@@ -1,13 +1,13 @@
-import { createElement } from 'react';
+import {createElement} from 'react';
 import dynamic from 'dva/dynamic';
 import pathToRegexp from 'path-to-regexp';
-import { getMenuData } from './menu';
+import {getMenuData} from './menu';
 
 let routerDataCache;
 
 const modelNotExisted = (app, model) =>
   // eslint-disable-next-line
-  !app._models.some(({ namespace }) => {
+  !app._models.some(({namespace}) => {
     return namespace === model.substring(model.lastIndexOf('/') + 1);
   });
 
@@ -58,10 +58,10 @@ function getFlatMenuData(menus) {
   let keys = {};
   menus.forEach(item => {
     if (item.children) {
-      keys[item.path] = { ...item };
-      keys = { ...keys, ...getFlatMenuData(item.children) };
+      keys[item.path] = {...item};
+      keys = {...keys, ...getFlatMenuData(item.children)};
     } else {
-      keys[item.path] = { ...item };
+      keys[item.path] = {...item};
     }
   });
   return keys;
@@ -81,10 +81,13 @@ export const getRouterData = app => {
       ),
     },
     '/test/teil-test': {
-      component: dynamicWrapper(app, ['teil'], () => import('../routes/BMGSys/TeilList')),
+      component: dynamicWrapper(app, ['teiltest'], () => import('../routes/BMGSys/TeilTestList')),
     },
     '/modell/modell-list': {
       component: dynamicWrapper(app, ['modell'], () => import('../routes/BMGSys/ModellList')),
+    },
+    '/modell/teil-search': {
+      component: dynamicWrapper(app, ['teil'], () => import('../routes/BMGSys/TeilSearchList')),
     },
     '/user/user-list': {
       component: dynamicWrapper(app, ['teil'], () => import('../routes/BMGSys/TeilList')),
