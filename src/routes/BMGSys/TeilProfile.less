@@ -1,50 +1,8 @@
 @import '~antd/lib/style/themes/default.less';
 
-.list {
-  :global {
-    .ant-list-header {
-      background-color: @table-header-bg;
-    }
-  }
-  .operate {
-    float: right;
-    background-color: @btn-default-bg;
-    border: @border-width-base @border-style-base @border-color-base;
-    border-radius: @border-radius-base;
-    cursor: pointer;
-    &:hover {
-      background-color: @table-header-bg;
-    }
-  }
-}
-
-.mySubuser {
-  margin: 24px 0;
-  :global {
-    .ant-list-header {
-      background-color: @table-header-bg;
-    }
-    .ant-list-item {
-      padding: 0;
-      .ant-table-wrapper {
-        width: 100%;
-      }
-    }
-    .ant-table-pagination.ant-pagination {
-      padding: 0 @padding-md;
-    }
-    .ant-pagination-options {
-      display: none;
-    }
-  }
-  .operate {
-    float: right;
-    background-color: #fff;
-    border: @border-width-base @border-style-base @border-color-base;
-    border-radius: @border-radius-base;
-    cursor: pointer;
-    &:hover {
-      background-color: @table-header-bg;
-    }
-  }
+.title {
+  color: @heading-color;
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 16px;
 }

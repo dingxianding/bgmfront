@@ -75,6 +75,9 @@ export const getRouterData = app => {
     '/teil/teil-list': {
       component: dynamicWrapper(app, ['teil'], () => import('../routes/BMGSys/TeilList')),
     },
+    '/teil/teil-profile/:id': {
+      component: dynamicWrapper(app, ['teil'], () => import('../routes/BMGSys/TeilProfile')),
+    },
     '/teil/teil-schedule': {
       component: dynamicWrapper(app, ['teilschedule'], () =>
         import('../routes/BMGSys/TeilScheduleList')
@@ -89,12 +92,13 @@ export const getRouterData = app => {
     '/modell/teil-search': {
       component: dynamicWrapper(app, ['teil'], () => import('../routes/BMGSys/TeilSearchList')),
     },
-    '/user/user-list': {
-      component: dynamicWrapper(app, ['teil'], () => import('../routes/BMGSys/TeilList')),
+    '/modell/modell-profile/:id': {
+      component: dynamicWrapper(app, ['modell'], () => import('../routes/BMGSys/ModellProfile')),
     },
-    '/teil/teil-profile/:id': {
-      component: dynamicWrapper(app, ['teil'], () => import('../routes/BMGSys/TeilProfile')),
+    '/users': {
+      component: dynamicWrapper(app, ['usermng'], () => import('../routes/BMGSys/UserList')),
     },
+
     '/dashboard/analysis': {
       component: dynamicWrapper(app, ['chart'], () => import('../routes/Dashboard/Analysis')),
     },

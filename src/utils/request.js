@@ -1,7 +1,10 @@
 import fetch from 'dva/fetch';
-import { notification } from 'antd';
-import { routerRedux } from 'dva/router';
+import Cookies from 'universal-cookie';
+import {notification} from 'antd';
+import {routerRedux} from 'dva/router';
 import store from '../index';
+
+const cookies = new Cookies();
 
 const codeMessage = {
   200: '服务器成功返回请求的数据。',
@@ -20,8 +23,9 @@ const codeMessage = {
   503: '服务不可用，服务器暂时过载或维护。',
   504: '网关超时。',
 };
+
 function checkStatus(response) {
-  if (response.status >= 200 && response.status < 300) {
+  if ((response.status >= 200 && response.status < 300) || response.status === 500) {
     return response;
   }
   const errortext = codeMessage[response.status] || response.statusText;
@@ -44,23 +48,35 @@ function checkStatus(response) {
  */
 export default function request(url, options) {
   const defaultOptions = {
-    credentials: 'include',
+    credentials: 'same-origin',
+    headers: {Accept: 'application/json'},
   };
-  const newOptions = { ...defaultOptions, ...options };
+
+  const urlPrefix = url.indexOf('/myapi/users/login');
+
+  if (urlPrefix !== 0) {
+    let accessToken;
+
+    if (cookies.get('access_token')) {
+      accessToken = cookies.get('access_token');
+      defaultOptions.headers.Authorization = `Bearer ${accessToken}`;
+    } else if (localStorage.getItem('access_token')) {
+      cookies.set('access_token', localStorage.getItem('access_token'), {path: '/'});
+      accessToken = cookies.get('access_token');
+      defaultOptions.headers.Authorization = `Bearer ${accessToken}`;
+    } else {
+      const error = new Error('Token为空');
+      error.name = 500;
+      error.code = 1001;
+      throw error;
+    }
+  }
+
+  const newOptions = {...defaultOptions, ...options};
   if (newOptions.method === 'POST' || newOptions.method === 'PUT') {
     if (!(newOptions.body instanceof FormData)) {
-      newOptions.headers = {
-        Accept: 'application/json',
-        'Content-Type': 'application/json; charset=utf-8',
-        ...newOptions.headers,
-      };
+      newOptions.headers['Content-Type'] = 'application/json; charset=utf-8';
       newOptions.body = JSON.stringify(newOptions.body);
-    } else {
-      // newOptions.body is FormData
-      newOptions.headers = {
-        Accept: 'application/json',
-        ...newOptions.headers,
-      };
     }
   }
 
@@ -72,8 +88,18 @@ export default function request(url, options) {
       }
       return response.json();
     })
+    .then(json => {
+      if (json.error) {
+        const error = new Error(json.message);
+        error.name = 500;
+        error.code = json.error;
+        throw error;
+      } else {
+        return json;
+      }
+    })
     .catch(e => {
-      const { dispatch } = store;
+      const {dispatch} = store;
       const status = e.name;
       if (status === 401) {
         dispatch({
@@ -85,7 +111,10 @@ export default function request(url, options) {
         dispatch(routerRedux.push('/exception/403'));
         return;
       }
-      if (status <= 504 && status >= 500) {
+      if (status === 500) {
+        throw e;
+      }
+      if (status <= 504 && status >= 501) {
         dispatch(routerRedux.push('/exception/500'));
         return;
       }

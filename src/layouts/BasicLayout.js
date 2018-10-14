@@ -1,24 +1,24 @@
-import React, { Fragment } from 'react';
+import React, {Fragment} from 'react';
 import PropTypes from 'prop-types';
-import { Layout, Icon, message } from 'antd';
+import {Layout, Icon, message} from 'antd';
 import DocumentTitle from 'react-document-title';
-import { connect } from 'dva';
-import { Route, Redirect, Switch, routerRedux } from 'dva/router';
-import { ContainerQuery } from 'react-container-query';
+import {connect} from 'dva';
+import {Route, Redirect, Switch, routerRedux} from 'dva/router';
+import {ContainerQuery} from 'react-container-query';
 import classNames from 'classnames';
 import pathToRegexp from 'path-to-regexp';
-import { enquireScreen, unenquireScreen } from 'enquire-js';
+import {enquireScreen, unenquireScreen} from 'enquire-js';
 import GlobalHeader from '../components/GlobalHeader';
 import GlobalFooter from '../components/GlobalFooter';
 import SiderMenu from '../components/SiderMenu';
 import NotFound from '../routes/Exception/404';
-import { getRoutes } from '../utils/utils';
+import {getRoutes} from '../utils/utils';
 import Authorized from '../utils/Authorized';
-import { getMenuData } from '../common/menu';
+import {getMenuData} from '../common/menu';
 import logo from '../assets/logo.svg';
 
-const { Content, Header, Footer } = Layout;
-const { AuthorizedRoute, check } = Authorized;
+const {Content, Header, Footer} = Layout;
+const {AuthorizedRoute, check} = Authorized;
 
 /**
  * 根据菜单取得重定向地址.
@@ -76,6 +76,10 @@ const query = {
   },
   'screen-xl': {
     minWidth: 1200,
+    maxWidth: 1599,
+  },
+  'screen-xxl': {
+    minWidth: 1600,
   },
 };
 
@@ -84,38 +88,50 @@ enquireScreen(b => {
   isMobile = b;
 });
 
-class BasicLayout extends React.PureComponent {
+@connect(({user, global = {}, loading}) => ({
+  currentUser: user.currentUser,
+  collapsed: global.collapsed,
+  fetchingNotices: loading.effects['global/fetchNotices'],
+  notices: global.notices,
+}))
+export default class BasicLayout extends React.PureComponent {
   static childContextTypes = {
     location: PropTypes.object,
     breadcrumbNameMap: PropTypes.object,
   };
+
   state = {
     isMobile,
   };
+
   getChildContext() {
-    const { location, routerData } = this.props;
+    const {location, routerData} = this.props;
     return {
       location,
       breadcrumbNameMap: getBreadcrumbNameMap(getMenuData(), routerData),
     };
   }
+
   componentDidMount() {
     this.enquireHandler = enquireScreen(mobile => {
       this.setState({
         isMobile: mobile,
       });
     });
-    this.props.dispatch({
+    const {dispatch} = this.props;
+    dispatch({
       type: 'user/fetchCurrent',
     });
   }
+
   componentWillUnmount() {
     unenquireScreen(this.enquireHandler);
   }
+
   getPageTitle() {
-    const { routerData, location } = this.props;
-    const { pathname } = location;
-    let title = 'Ant Design Pro';
+    const {routerData, location} = this.props;
+    const {pathname} = location;
+    let title = '零部件管理系统';
     let currRouterData = null;
     // match params path
     Object.keys(routerData).forEach(key => {
@@ -124,11 +140,12 @@ class BasicLayout extends React.PureComponent {
       }
     });
     if (currRouterData && currRouterData.name) {
-      title = `${currRouterData.name} - Ant Design Pro`;
+      title = `${currRouterData.name} - 零部件管理系统`;
     }
     return title;
   }
-  getBashRedirect = () => {
+
+  getBaseRedirect = () => {
     // According to the url parameter to redirect
     // 这里是重定向的,重定向到 url 的 redirect 参数所示地址
     const urlParams = new URL(window.location.href);
@@ -139,46 +156,55 @@ class BasicLayout extends React.PureComponent {
       urlParams.searchParams.delete('redirect');
       window.history.replaceState(null, 'redirect', urlParams.href);
     } else {
-      const { routerData } = this.props;
+      const {routerData} = this.props;
       // get the first authorized route path in routerData
       const authorizedPath = Object.keys(routerData).find(
-        item => check(routerData[item].authority, item) && item !== '/'
+        item => check(routerData[item].authority, item) && item !== '/',
       );
       return authorizedPath;
     }
     return redirect;
   };
+
   handleMenuCollapse = collapsed => {
-    this.props.dispatch({
+    const {dispatch} = this.props;
+    dispatch({
       type: 'global/changeLayoutCollapsed',
       payload: collapsed,
     });
   };
+
   handleNoticeClear = type => {
     message.success(`清空了${type}`);
-    this.props.dispatch({
+    const {dispatch} = this.props;
+    dispatch({
       type: 'global/clearNotices',
       payload: type,
     });
   };
-  handleMenuClick = ({ key }) => {
+
+  handleMenuClick = ({key}) => {
+    const {dispatch} = this.props;
     if (key === 'triggerError') {
-      this.props.dispatch(routerRedux.push('/exception/trigger'));
+      dispatch(routerRedux.push('/exception/trigger'));
       return;
     }
     if (key === 'logout') {
-      this.props.dispatch({
+      dispatch({
         type: 'login/logout',
       });
     }
   };
+
   handleNoticeVisibleChange = visible => {
+    const {dispatch} = this.props;
     if (visible) {
-      this.props.dispatch({
+      dispatch({
         type: 'global/fetchNotices',
       });
     }
   };
+
   render() {
     const {
       currentUser,
@@ -189,7 +215,9 @@ class BasicLayout extends React.PureComponent {
       match,
       location,
     } = this.props;
-    const bashRedirect = this.getBashRedirect();
+
+    const {isMobile: mb} = this.state;
+    const baseRedirect = this.getBaseRedirect();
     const layout = (
       <Layout>
         <SiderMenu
@@ -201,28 +229,28 @@ class BasicLayout extends React.PureComponent {
           menuData={getMenuData()}
           collapsed={collapsed}
           location={location}
-          isMobile={this.state.isMobile}
+          isMobile={mb}
           onCollapse={this.handleMenuCollapse}
         />
         <Layout>
-          <Header style={{ padding: 0 }}>
+          <Header style={{padding: 0}}>
             <GlobalHeader
               logo={logo}
               currentUser={currentUser}
               fetchingNotices={fetchingNotices}
               notices={notices}
               collapsed={collapsed}
-              isMobile={this.state.isMobile}
+              isMobile={mb}
               onNoticeClear={this.handleNoticeClear}
               onCollapse={this.handleMenuCollapse}
               onMenuClick={this.handleMenuClick}
               onNoticeVisibleChange={this.handleNoticeVisibleChange}
             />
           </Header>
-          <Content style={{ margin: '24px 24px 0', height: '100%' }}>
+          <Content style={{margin: '24px 24px 0', height: '100%'}}>
             <Switch>
               {redirectData.map(item => (
-                <Redirect key={item.from} exact from={item.from} to={item.to} />
+                <Redirect key={item.from} exact from={item.from} to={item.to}/>
               ))}
               {getRoutes(match.path, routerData).map(item => (
                 <AuthorizedRoute
@@ -234,35 +262,23 @@ class BasicLayout extends React.PureComponent {
                   redirectPath="/exception/403"
                 />
               ))}
-              <Redirect exact from="/" to={bashRedirect} />
-              <Route render={NotFound} />
+              <Redirect exact from="/" to={baseRedirect}/>
+              <Route render={NotFound}/>
             </Switch>
           </Content>
-          <Footer style={{ padding: 0 }}>
+          <Footer style={{padding: 0}}>
             <GlobalFooter
               links={[
                 {
-                  key: 'Pro 首页',
-                  title: 'Pro 首页',
-                  href: 'http://pro.ant.design',
-                  blankTarget: true,
-                },
-                {
-                  key: 'github',
-                  title: <Icon type="github" />,
-                  href: 'https://github.com/ant-design/ant-design-pro',
-                  blankTarget: true,
-                },
-                {
-                  key: 'Ant Design',
-                  title: 'Ant Design',
-                  href: 'http://ant.design',
+                  key: '汽车零部件开发信息与车型项目管理系统',
+                  title: '汽车零部件开发信息与车型项目管理系统',
+                  href: '',
                   blankTarget: true,
                 },
               ]}
               copyright={
                 <Fragment>
-                  Copyright <Icon type="copyright" /> 2018 蚂蚁金服体验技术部出品
+                  Copyright <Icon type="copyright"/> 上汽大众动力总成研发科
                 </Fragment>
               }
             />
@@ -280,10 +296,3 @@ class BasicLayout extends React.PureComponent {
     );
   }
 }
-
-export default connect(({ user, global, loading }) => ({
-  currentUser: user.currentUser,
-  collapsed: global.collapsed,
-  fetchingNotices: loading.effects['global/fetchNotices'],
-  notices: global.notices,
-}))(BasicLayout);

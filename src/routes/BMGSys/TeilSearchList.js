@@ -329,11 +329,7 @@ export default class TeilSearchList extends PureComponent {
         title: 'Benennung',
         dataIndex: 'name',
         sorter: true,
-        render: (row, item) => (
-          <Link to={`/teil/teil-profile/${item.id}`} style={{color: 'rgba(0, 0, 0, 0.65)'}}>
-            {item.name}
-          </Link>
-        ),
+        render: (row, item) => <Link to={`/teil/teil-profile/${item.id}`}>{item.name}</Link>,
       },
       {
         title: '状态',

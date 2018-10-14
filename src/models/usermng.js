@@ -1,15 +1,15 @@
-import {init, query, remove, add, update, getById} from '../services/teil';
+import {init, query, remove, add, update, queryCurrent} from '../services/usermng';
 
 export default {
-  namespace: 'teil',
-
+  namespace: 'usermng',
   state: {
     data: {
       list: [],
       pagination: {},
     },
-    profile: {},
+    currentUser: {},
   },
+
 
   effects: {
     * init({payload}, {call, put}) {
@@ -23,13 +23,6 @@ export default {
       const response = yield call(query, payload);
       yield put({
         type: 'save',
-        payload: response,
-      });
-    },
-    * getById({payload}, {call, put}) {
-      const response = yield call(getById, payload);
-      yield put({
-        type: 'saveProfile',
         payload: response,
       });
     },
@@ -57,6 +50,13 @@ export default {
       // });
       if (callback) callback();
     },
+    * fetchCurrent(_, {call, put}) {
+      const response = yield call(queryCurrent);
+      yield put({
+        type: 'saveCurrentUser',
+        payload: response,
+      });
+    },
   },
 
   reducers: {
@@ -66,10 +66,10 @@ export default {
         data: action.payload,
       };
     },
-    saveProfile(state, action) {
+    saveCurrentUser(state, action) {
       return {
         ...state,
-        profile: action.payload,
+        currentUser: action.payload,
       };
     },
   },

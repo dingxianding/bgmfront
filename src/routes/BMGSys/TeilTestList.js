@@ -53,9 +53,9 @@ const CreateForm = Form.create({
   const supplierTestReport = [];//供应商自检实验报告
   const wobTestReport = [];//WOB实验报告
 
-  let formTitle = '添加零件试验信息';
+  let formTitle = '添加试验信息';
   if (isEdit) {
-    formTitle = '编辑零件试验信息';
+    formTitle = '编辑试验信息';
   }
 
   if (teilList && teilList.length > 0) {
@@ -702,7 +702,7 @@ export default class TeilTestList extends PureComponent {
 
     const columns = [
       {
-        title: '零件号',
+        title: 'Teil Nr.',
         dataIndex: 'teil.number',
         // render: val => (
         //   <span>
@@ -714,9 +714,10 @@ export default class TeilTestList extends PureComponent {
         fixed: 'left',
       },
       {
-        title: '零件名称',
+        title: 'Benennung',
         dataIndex: 'teil.name',
         fixed: 'left',
+        render: (row, item) => <Link to={`/teil/teil-profile/${item.teil.id}`}>{item.teil.name}</Link>,
       },
       {
         title: 'FOP',
@@ -904,7 +905,7 @@ export default class TeilTestList extends PureComponent {
     };
 
     return (
-      <PageHeaderLayout title="试验信息管理">
+      <PageHeaderLayout title="试验信息">
         <Card bordered={false}>
           <div className={styles.tableList}>
             <div className={styles.tableListForm}>{this.renderForm()}</div>

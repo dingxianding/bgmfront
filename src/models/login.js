@@ -1,7 +1,11 @@
-import { routerRedux } from 'dva/router';
-import { fakeAccountLogin } from '../services/api';
-import { setAuthority } from '../utils/authority';
-import { reloadAuthorized } from '../utils/Authorized';
+import {routerRedux} from 'dva/router';
+import Cookies from 'universal-cookie';
+import {stringRole} from '../utils/utils';
+import {accountLogin} from '../services/usermng';
+import {setAuthority} from '../utils/authority';
+import {reloadAuthorized} from '../utils/Authorized';
+
+const cookies = new Cookies();
 
 export default {
   namespace: 'login',
@@ -11,47 +15,72 @@ export default {
   },
 
   effects: {
-    *login({ payload }, { call, put }) {
-      const response = yield call(fakeAccountLogin, payload);
-      yield put({
-        type: 'changeLoginStatus',
-        payload: response,
-      });
-      // Login successfully
-      if (response.status === 'ok') {
+    * login({payload}, {call, put}) {
+      try {
+        const {username, password, autoLogin} = payload;
+        const response = yield call(accountLogin, {username, password});
+        yield put({
+          type: 'changeLoginStatus',
+          payload: {
+            ...response,
+            status: true,
+          },
+        });
+        // Login successfully
         reloadAuthorized();
-        yield put(routerRedux.push('/'));
+        if (autoLogin) {
+          window.localStorage.setItem('access_token', response.access_token);
+          window.localStorage.setItem('myId', response.id);
+        } else {
+          cookies.set('access_token', response.access_token, {path: '/'});
+          window.sessionStorage.setItem('access_token', response.access_token);
+          window.localStorage.setItem('myId', response.id);
+        }
+        yield put(routerRedux.replace('/'));
+      } catch (e) {
+        throw e;
       }
     },
-    *logout(_, { put, select }) {
+    * logout(_, {put}) {
+      window.localStorage.clear();
+      window.sessionStorage.clear();
+      cookies.remove('access_token');
       try {
-        // get location pathname
-        const urlParams = new URL(window.location.href);
-        const pathname = yield select(state => state.routing.location.pathname);
-        // add the parameters in the url
-        urlParams.searchParams.set('redirect', pathname);
-        window.history.replaceState(null, 'login', urlParams.href);
-      } finally {
         yield put({
           type: 'changeLoginStatus',
           payload: {
             status: false,
-            currentAuthority: 'guest',
+            role: 'guest',
           },
         });
         reloadAuthorized();
-        yield put(routerRedux.push('/user/login'));
+        yield put(
+          routerRedux.push({
+            pathname: '/user/login',
+            // search: stringify({
+            //   redirect: window.location.href,
+            // }),
+          }),
+        );
+      } catch (e) {
+        throw e;
       }
     },
   },
 
   reducers: {
-    changeLoginStatus(state, { payload }) {
-      setAuthority(payload.currentAuthority);
+    changeLoginStatus(
+      state,
+      {
+        payload: {role, status, type},
+      },
+    ) {
+      const setRole = stringRole(role);
+      setAuthority(setRole);
       return {
         ...state,
-        status: payload.status,
-        type: payload.type,
+        status,
+        type,
       };
     },
   },

@@ -48,9 +48,9 @@ const CreateForm = Form.create({
 })(props => {
   const {modalVisible, form, handleAdd, handleModalVisible, teilList, isEdit, editRecord} = props;
   const teilChildren = [];
-  let formTitle = '添加零件进度';
+  let formTitle = '添加研发信息';
   if (isEdit) {
-    formTitle = '编辑零件进度';
+    formTitle = '编辑研发信息';
   }
 
   if (teilList && teilList.length > 0) {
@@ -723,7 +723,7 @@ export default class TeilScheduleList extends PureComponent {
 
     const columns = [
       {
-        title: '零件号',
+        title: 'Teil Nr.',
         dataIndex: 'teil.number',
         // render: val => (
         //   <span>
@@ -735,9 +735,10 @@ export default class TeilScheduleList extends PureComponent {
         fixed: 'left',
       },
       {
-        title: '零件名称',
+        title: 'Benennung',
         dataIndex: 'teil.name',
         fixed: 'left',
+        render: (row, item) => <Link to={`/teil/teil-profile/${item.teil.id}`}>{item.teil.name}</Link>,
       },
       {
         title: 'FOP',
@@ -879,7 +880,7 @@ export default class TeilScheduleList extends PureComponent {
             <a onClick={() => this.handleEditModalVisible(record, true)}>编辑</a>
             <Divider type="vertical"/>
             <Popconfirm
-              title="删除该零件进度信息？"
+              title="删除该研发信息？"
               okText="是"
               cancelText="否"
               onConfirm={() => this.remove(record)}
@@ -909,13 +910,13 @@ export default class TeilScheduleList extends PureComponent {
     };
 
     return (
-      <PageHeaderLayout title="过程信息管理">
+      <PageHeaderLayout title="研发信息">
         <Card bordered={false}>
           <div className={styles.tableList}>
             <div className={styles.tableListForm}>{this.renderForm()}</div>
             <div className={styles.tableListOperator}>
               <Button icon="plus" type="primary" onClick={() => this.handleModalVisible(true)}>
-                添加零件进度
+                添加研发信息
               </Button>
             </div>
             <MyTable

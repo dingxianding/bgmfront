@@ -9,7 +9,7 @@ export async function query(params) {
   return request(`/myapi/teil/pagedList?${stringify(params)}`);
 }
 
-export async function getTeil({ id }) {
+export async function getById({ id }) {
   return request(`/myapi/teil/${id}`);
 }
 

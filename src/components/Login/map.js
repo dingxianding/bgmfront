@@ -1,5 +1,5 @@
 import React from 'react';
-import { Input, Icon } from 'antd';
+import {Input, Icon} from 'antd';
 import styles from './index.less';
 
 const map = {
@@ -7,13 +7,13 @@ const map = {
     component: Input,
     props: {
       size: 'large',
-      prefix: <Icon type="user" className={styles.prefixIcon} />,
+      prefix: <Icon type="user" className={styles.prefixIcon}/>,
       placeholder: 'admin',
     },
     rules: [
       {
         required: true,
-        message: 'Please enter username!',
+        message: '请输入用户名',
       },
     ],
   },
@@ -21,14 +21,14 @@ const map = {
     component: Input,
     props: {
       size: 'large',
-      prefix: <Icon type="lock" className={styles.prefixIcon} />,
+      prefix: <Icon type="lock" className={styles.prefixIcon}/>,
       type: 'password',
       placeholder: '888888',
     },
     rules: [
       {
         required: true,
-        message: 'Please enter password!',
+        message: '请输入密码',
       },
     ],
   },
@@ -36,7 +36,7 @@ const map = {
     component: Input,
     props: {
       size: 'large',
-      prefix: <Icon type="mobile" className={styles.prefixIcon} />,
+      prefix: <Icon type="mobile" className={styles.prefixIcon}/>,
       placeholder: 'mobile number',
     },
     rules: [
@@ -54,7 +54,7 @@ const map = {
     component: Input,
     props: {
       size: 'large',
-      prefix: <Icon type="mail" className={styles.prefixIcon} />,
+      prefix: <Icon type="mail" className={styles.prefixIcon}/>,
       placeholder: 'captcha',
     },
     rules: [

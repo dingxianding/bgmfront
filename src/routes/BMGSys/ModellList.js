@@ -160,6 +160,7 @@ const CreateForm = Form.create({
       <FormItem labelCol={{span: 8}} wrapperCol={{span: 15}} label="所属平台">
         {form.getFieldDecorator('platform', {
           initialValue: isEdit ? (editRecord.platform ? editRecord.platform.name : null) : null,
+          rules: [{required: true, message: '请选择所属平台'}],
         })(
           <Select
             showSearch
@@ -658,6 +659,7 @@ export default class ModellList extends PureComponent {
         title: '车型名称',
         dataIndex: 'name',
         sorter: true,
+        render: (row, item) => <Link to={`/modell/modell-profile/${item.id}`}>{item.name}</Link>,
       },
       {
         title: '平台',
@@ -792,7 +794,7 @@ export default class ModellList extends PureComponent {
     };
 
     return (
-      <PageHeaderLayout title="查询表格">
+      <PageHeaderLayout title="车型信息">
         <Card bordered={false}>
           <div className={styles.tableList}>
             <div className={styles.tableListForm}>{this.renderForm()}</div>

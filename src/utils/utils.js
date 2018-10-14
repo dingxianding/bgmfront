@@ -1,5 +1,5 @@
 import moment from 'moment';
-import { parse, stringify } from 'qs';
+import {parse, stringify} from 'qs';
 
 export function stringRole(val) {
   switch (val) {
@@ -13,6 +13,29 @@ export function stringRole(val) {
       return 'guest';
     default:
       return '';
+  }
+}
+
+export function chineseRole(val) {
+  switch (val) {
+    case 'admin':
+      return '系统管理员';
+    case 'master':
+      return '部门领导';
+    case 'user':
+      return '普通用户';
+    case 'guest':
+      return '访客';
+    default:
+      return '未知';
+  }
+}
+
+export function momentDate(val) {
+  if (val) {
+    return moment(val).format('YYYY-MM-DD');
+  } else {
+    return '';
   }
 }
 
@@ -184,6 +207,19 @@ export function getRoutes(path, routerData) {
     };
   });
   return renderRoutes;
+}
+
+
+export function getPageQuery() {
+  return parse(window.location.href.split('?')[1]);
+}
+
+export function getQueryPath(path = '', query = {}) {
+  const search = stringify(query);
+  if (search.length) {
+    return `${path}?${search}`;
+  }
+  return path;
 }
 
 /* eslint no-useless-escape:0 */

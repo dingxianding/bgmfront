@@ -67,11 +67,11 @@ const CreateForm = Form.create({
   const abgasstufeChildren = [];// 排放阶段
   const modellChildren = [];// 车型
   const aggregateChildren = [];// 动力总成
-  let formTitle = '添加零件';
+  let formTitle = '添加基础信息';
   const modells = [];
   const aggregates = [];
   if (isEdit) {
-    formTitle = '编辑零件';
+    formTitle = '编辑基础信息';
     let modellsLength = 0;
     if (editRecord.modells) {
       modellsLength = editRecord.modells.length;
@@ -562,11 +562,7 @@ export default class TeilList extends PureComponent {
         title: 'Benennung',
         dataIndex: 'name',
         sorter: true,
-        render: (row, item) => (
-          <Link to={`/teil/teil-profile/${item.id}`} style={{color: 'rgba(0, 0, 0, 0.65)'}}>
-            {item.name}
-          </Link>
-        ),
+        render: (row, item) =><Link to={`/teil/teil-profile/${item.id}`}>{item.name}</Link>,
       },
       {
         title: '状态',
@@ -589,6 +585,7 @@ export default class TeilList extends PureComponent {
             value: 3,
           },
         ],
+        filterMultiple: false,
         onFilter: (value, record) => record.status.toString() === value,
         render(val) {
           return <Badge status={statusMap[val]} text={status[val]}/>;
@@ -611,6 +608,7 @@ export default class TeilList extends PureComponent {
             value: 1,
           },
         ],
+        filterMultiple: false,
         onFilter: (value, record) => record.bezugsart.toString() === value,
         render(val) {
           return bezugsart[val];
@@ -633,6 +631,7 @@ export default class TeilList extends PureComponent {
             value: 3,
           },
         ],
+        filterMultiple: false,
         onFilter: (value, record) => record.abgasstufe.id.toString() === value,
       },
       {
@@ -732,7 +731,7 @@ export default class TeilList extends PureComponent {
     };
 
     return (
-      <PageHeaderLayout title="基础信息管理">
+      <PageHeaderLayout title="基础信息">
         <Card bordered={false}>
           <div className={styles.tableList}>
             <div className={styles.tableListForm}>{this.renderForm()}</div>
