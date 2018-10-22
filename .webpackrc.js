@@ -12,7 +12,6 @@ export default {
     '/myapi': {
       target: 'http://localhost:18080',
       changeOrigin: true,
-      pathRewrite: { '^/myapi': '' },
     },
   },
   alias: {

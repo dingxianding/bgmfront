@@ -68,7 +68,7 @@ export default class LoginPage extends Component {
             <Checkbox checked={autoLogin} onChange={this.changeAutoLogin}>
               自动登录
             </Checkbox>
-            <Link style={{ float: 'right' }} to="/public/reset-password">
+            <Link style={{ float: 'right' }} to="/user/reset-password">
               忘记密码
             </Link>
           </div>

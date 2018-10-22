@@ -1,4 +1,4 @@
-import {init, query, remove, add, update, queryCurrent} from '../services/usermng';
+import { init, query, remove, add, update, queryCurrent } from '../services/usermng';
 
 export default {
   namespace: 'usermng',
@@ -10,23 +10,22 @@ export default {
     currentUser: {},
   },
 
-
   effects: {
-    * init({payload}, {call, put}) {
+    *init({ payload }, { call, put }) {
       const response = yield call(init, payload);
       yield put({
         type: 'save',
         payload: response,
       });
     },
-    * fetch({payload}, {call, put}) {
+    *fetch({ payload }, { call, put }) {
       const response = yield call(query, payload);
       yield put({
         type: 'save',
         payload: response,
       });
     },
-    * add({payload, callback}, {call, put}) {
+    *add({ payload, callback }, { call, put }) {
       const response = yield call(add, payload);
       // yield put({
       //   type: 'save',
@@ -34,7 +33,7 @@ export default {
       // });
       if (callback) callback();
     },
-    * remove({payload, callback}, {call, put}) {
+    *remove({ payload, callback }, { call, put }) {
       const response = yield call(remove, payload);
       // yield put({
       //   type: 'save',
@@ -42,7 +41,7 @@ export default {
       // });
       if (callback) callback();
     },
-    * update({payload, callback}, {call, put}) {
+    *update({ payload, callback }, { call, put }) {
       const response = yield call(update, payload);
       // yield put({
       //   type: 'save',
@@ -50,12 +49,16 @@ export default {
       // });
       if (callback) callback();
     },
-    * fetchCurrent(_, {call, put}) {
-      const response = yield call(queryCurrent);
-      yield put({
-        type: 'saveCurrentUser',
-        payload: response,
-      });
+    *fetchCurrent(_, { call, put }) {
+      try {
+        const response = yield call(queryCurrent);
+        yield put({
+          type: 'saveCurrentUser',
+          payload: response,
+        });
+      } catch (e) {
+        throw e;
+      }
     },
   },
 

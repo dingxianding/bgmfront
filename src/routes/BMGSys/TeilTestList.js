@@ -1,7 +1,7 @@
-import React, {PureComponent, Fragment} from 'react';
-import {connect} from 'dva';
+import React, { PureComponent, Fragment } from 'react';
+import { connect } from 'dva';
 import moment from 'moment';
-import {Link} from 'dva/router';
+import { Link } from 'dva/router';
 import {
   Row,
   Col,
@@ -20,22 +20,23 @@ import {
   Badge,
   Divider,
   Popconfirm,
-  Radio, Upload,
+  Radio,
+  Upload,
 } from 'antd';
 import MyTable from 'components/MyTable';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 
 import styles from './TeilTestList.less';
 
-const {MonthPicker, RangePicker, WeekPicker} = DatePicker;
+const { MonthPicker, RangePicker, WeekPicker } = DatePicker;
 const RadioGroup = Radio.Group;
 const FormItem = Form.Item;
-const {Option} = Select;
+const { Option } = Select;
 const getValue = obj =>
   Object.keys(obj)
     .map(key => obj[key])
     .join(',');
-const UrlHead = 'http://localhost:18080/download/';
+const UrlHead = 'http://104.207.153.132:18080/myapi/download/';
 
 const CreateForm = Form.create({
   mapPropsToFields(props) {
@@ -46,12 +47,21 @@ const CreateForm = Form.create({
     };
   },
 })(props => {
-  const {modalVisible, form, handleAdd, handleModalVisible, teilList, isEdit, editRecord, beforeUpload,} = props;
+  const {
+    modalVisible,
+    form,
+    handleAdd,
+    handleModalVisible,
+    teilList,
+    isEdit,
+    editRecord,
+    beforeUpload,
+  } = props;
   const teilChildren = [];
-  const sizeTestReport = [];//尺寸实验报告
-  const materialTestReport = [];//材料实验报告
-  const supplierTestReport = [];//供应商自检实验报告
-  const wobTestReport = [];//WOB实验报告
+  const sizeTestReport = []; //尺寸实验报告
+  const materialTestReport = []; //材料实验报告
+  const supplierTestReport = []; //供应商自检实验报告
+  const wobTestReport = []; //WOB实验报告
 
   let formTitle = '添加试验信息';
   if (isEdit) {
@@ -129,7 +139,7 @@ const CreateForm = Form.create({
     form.validateFields((err, fieldsValue) => {
       if (err) return;
       form.resetFields();
-      let params = {...fieldsValue};
+      let params = { ...fieldsValue };
       if (isEdit) {
         params = {
           isEdit,
@@ -161,14 +171,14 @@ const CreateForm = Form.create({
       onOk={okHandle}
       onCancel={() => handleModalVisible()}
     >
-      <FormItem labelCol={{span: 8}} wrapperCol={{span: 15}} label="零件编号">
+      <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 15 }} label="零件编号">
         {form.getFieldDecorator('teil', {
           initialValue: isEdit ? (editRecord.teil ? editRecord.teil.number : null) : null,
-          rules: [{required: true, message: '请选择零件'}],
+          rules: [{ required: true, message: '请选择零件' }],
         })(
           <Select
             showSearch
-            style={{width: 150}}
+            style={{ width: 150 }}
             placeholder="请选择"
             optionFilterProp="children"
             filterOption={(input, option) =>
@@ -179,128 +189,136 @@ const CreateForm = Form.create({
           </Select>
         )}
       </FormItem>
-      <FormItem labelCol={{span: 8}} wrapperCol={{span: 15}} label="尺寸计划送样时间">
+      <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 15 }} label="尺寸计划送样时间">
         {form.getFieldDecorator('sizeSollTime', {
           initialValue: isEdit
-            ? editRecord.sizeSollTime
-              ? moment(editRecord.sizeSollTime, 'YYYY-MM-DD HH:mm:ss')
-              : ''
+            ? editRecord.sizeSollTime ? moment(editRecord.sizeSollTime, 'YYYY-MM-DD HH:mm:ss') : ''
             : null,
-        })(<WeekPicker placeholder="请输入" format="YYYY-MM-DD"/>)}
+        })(<WeekPicker placeholder="请输入" format="YYYY-MM-DD" />)}
       </FormItem>
-      <FormItem labelCol={{span: 8}} wrapperCol={{span: 15}} label="尺寸实际送样时间">
+      <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 15 }} label="尺寸实际送样时间">
         {form.getFieldDecorator('sizeIstTime', {
           initialValue: isEdit
             ? editRecord.sizeIstTime ? moment(editRecord.sizeIstTime, 'YYYY-MM-DD HH:mm:ss') : ''
             : null,
-        })(<WeekPicker placeholder="请输入" format="YYYY-MM-DD"/>)}
+        })(<WeekPicker placeholder="请输入" format="YYYY-MM-DD" />)}
       </FormItem>
-      <FormItem labelCol={{span: 8}} wrapperCol={{span: 15}} label="尺寸实验实际完成时间">
+      <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 15 }} label="尺寸实验实际完成时间">
         {form.getFieldDecorator('sizeTestIstTime', {
           initialValue: isEdit
-            ? editRecord.sizeTestIstTime ? moment(editRecord.sizeTestIstTime, 'YYYY-MM-DD HH:mm:ss') : ''
+            ? editRecord.sizeTestIstTime
+              ? moment(editRecord.sizeTestIstTime, 'YYYY-MM-DD HH:mm:ss')
+              : ''
             : null,
-        })(<WeekPicker placeholder="请输入" format="YYYY-MM-DD"/>)}
+        })(<WeekPicker placeholder="请输入" format="YYYY-MM-DD" />)}
       </FormItem>
-      <FormItem labelCol={{span: 8}} wrapperCol={{span: 15}} label="尺寸实验报告">
+      <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 15 }} label="尺寸实验报告">
         {form.getFieldDecorator('sizeTestReport', {
-          initialValue: isEdit ? {fileList: sizeTestReport} : null,
+          initialValue: isEdit ? { fileList: sizeTestReport } : null,
         })(
           <Upload {...fileProps} defaultFileList={sizeTestReport}>
             <Button>
-              <Icon type="upload"/> 选择文件
+              <Icon type="upload" /> 选择文件
             </Button>
           </Upload>
         )}
       </FormItem>
-      <FormItem labelCol={{span: 8}} wrapperCol={{span: 15}} label="材料计划送样时间">
+      <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 15 }} label="材料计划送样时间">
         {form.getFieldDecorator('materialSollTime', {
           initialValue: isEdit
-            ? editRecord.materialSollTime ? moment(editRecord.materialSollTime, 'YYYY-MM-DD HH:mm:ss') : ''
+            ? editRecord.materialSollTime
+              ? moment(editRecord.materialSollTime, 'YYYY-MM-DD HH:mm:ss')
+              : ''
             : null,
-        })(<WeekPicker placeholder="请输入" format="YYYY-MM-DD"/>)}
+        })(<WeekPicker placeholder="请输入" format="YYYY-MM-DD" />)}
       </FormItem>
-      <FormItem labelCol={{span: 8}} wrapperCol={{span: 15}} label="材料实际送样时间">
+      <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 15 }} label="材料实际送样时间">
         {form.getFieldDecorator('materialIstTime', {
           initialValue: isEdit
-            ? editRecord.materialIstTime ? moment(editRecord.materialIstTime, 'YYYY-MM-DD HH:mm:ss') : ''
+            ? editRecord.materialIstTime
+              ? moment(editRecord.materialIstTime, 'YYYY-MM-DD HH:mm:ss')
+              : ''
             : null,
-        })(<WeekPicker placeholder="请输入" format="YYYY-MM-DD"/>)}
+        })(<WeekPicker placeholder="请输入" format="YYYY-MM-DD" />)}
       </FormItem>
-      <FormItem labelCol={{span: 8}} wrapperCol={{span: 15}} label="材料实验实际完成时间">
+      <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 15 }} label="材料实验实际完成时间">
         {form.getFieldDecorator('materialTestIstTime', {
           initialValue: isEdit
-            ? editRecord.materialTestIstTime ? moment(editRecord.materialTestIstTime, 'YYYY-MM-DD HH:mm:ss') : ''
+            ? editRecord.materialTestIstTime
+              ? moment(editRecord.materialTestIstTime, 'YYYY-MM-DD HH:mm:ss')
+              : ''
             : null,
-        })(<WeekPicker placeholder="请输入" format="YYYY-MM-DD"/>)}
+        })(<WeekPicker placeholder="请输入" format="YYYY-MM-DD" />)}
       </FormItem>
-      <FormItem labelCol={{span: 8}} wrapperCol={{span: 15}} label="材料实验报告">
+      <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 15 }} label="材料实验报告">
         {form.getFieldDecorator('materialTestReport', {
-          initialValue: isEdit ? {fileList: materialTestReport} : null,
+          initialValue: isEdit ? { fileList: materialTestReport } : null,
         })(
           <Upload {...fileProps} defaultFileList={materialTestReport}>
             <Button>
-              <Icon type="upload"/> 选择文件
+              <Icon type="upload" /> 选择文件
             </Button>
           </Upload>
         )}
       </FormItem>
-      <FormItem labelCol={{span: 8}} wrapperCol={{span: 15}} label="供应商自检实验完成时间">
+      <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 15 }} label="供应商自检实验完成时间">
         {form.getFieldDecorator('supplierTestIstTime', {
           initialValue: isEdit
             ? editRecord.supplierTestIstTime
               ? moment(editRecord.supplierTestIstTime, 'YYYY-MM-DD HH:mm:ss')
               : ''
             : null,
-        })(<WeekPicker placeholder="请输入" format="YYYY-MM-DD"/>)}
+        })(<WeekPicker placeholder="请输入" format="YYYY-MM-DD" />)}
       </FormItem>
-      <FormItem labelCol={{span: 8}} wrapperCol={{span: 15}} label="供应商自检实验报告">
+      <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 15 }} label="供应商自检实验报告">
         {form.getFieldDecorator('supplierTestReport', {
-          initialValue: isEdit ? {fileList: supplierTestReport} : null,
+          initialValue: isEdit ? { fileList: supplierTestReport } : null,
         })(
           <Upload {...fileProps} defaultFileList={supplierTestReport}>
             <Button>
-              <Icon type="upload"/> 选择文件
+              <Icon type="upload" /> 选择文件
             </Button>
           </Upload>
         )}
       </FormItem>
-      <FormItem labelCol={{span: 8}} wrapperCol={{span: 15}} label="零件寄WOB做性能时间">
+      <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 15 }} label="零件寄WOB做性能时间">
         {form.getFieldDecorator('sendWobTime', {
           initialValue: isEdit
             ? editRecord.sendWobTime ? moment(editRecord.sendWobTime, 'YYYY-MM-DD HH:mm:ss') : ''
             : null,
-        })(<WeekPicker placeholder="请输入" format="YYYY-MM-DD"/>)}
+        })(<WeekPicker placeholder="请输入" format="YYYY-MM-DD" />)}
       </FormItem>
-      <FormItem labelCol={{span: 8}} wrapperCol={{span: 15}} label="WOB实验完成时间">
+      <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 15 }} label="WOB实验完成时间">
         {form.getFieldDecorator('wobTestCompleteTime', {
           initialValue: isEdit
-            ? editRecord.wobTestCompleteTime ? moment(editRecord.wobTestCompleteTime, 'YYYY-MM-DD HH:mm:ss') : ''
+            ? editRecord.wobTestCompleteTime
+              ? moment(editRecord.wobTestCompleteTime, 'YYYY-MM-DD HH:mm:ss')
+              : ''
             : null,
-        })(<WeekPicker placeholder="请输入" format="YYYY-MM-DD"/>)}
+        })(<WeekPicker placeholder="请输入" format="YYYY-MM-DD" />)}
       </FormItem>
-      <FormItem labelCol={{span: 8}} wrapperCol={{span: 15}} label="WOB实验报告">
+      <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 15 }} label="WOB实验报告">
         {form.getFieldDecorator('wobTestReport', {
-          initialValue: isEdit ? {fileList: wobTestReport} : null,
+          initialValue: isEdit ? { fileList: wobTestReport } : null,
         })(
           <Upload {...fileProps} defaultFileList={wobTestReport}>
             <Button>
-              <Icon type="upload"/> 选择文件
+              <Icon type="upload" /> 选择文件
             </Button>
           </Upload>
         )}
       </FormItem>
-      <FormItem labelCol={{span: 8}} wrapperCol={{span: 15}} label="耐久实验搭载车辆信息">
+      <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 15 }} label="耐久实验搭载车辆信息">
         {form.getFieldDecorator('endureTestCarInfo', {
           initialValue: isEdit ? editRecord.endureTestCarInfo : null,
-        })(<Input placeholder="请输入"/>)}
+        })(<Input placeholder="请输入" />)}
       </FormItem>
-      <FormItem labelCol={{span: 8}} wrapperCol={{span: 15}} label="备注">
+      <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 15 }} label="备注">
         {form.getFieldDecorator('remark', {
           initialValue: isEdit ? editRecord.remark : null,
-        })(<Input placeholder="请输入"/>)}
+        })(<Input placeholder="请输入" />)}
       </FormItem>
-      <FormItem labelCol={{span: 8}} wrapperCol={{span: 15}} label="是否沿用">
+      <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 15 }} label="是否沿用">
         {form.getFieldDecorator('ifCop', {
           initialValue: isEdit ? editRecord.ifCop : true,
         })(
@@ -314,7 +332,7 @@ const CreateForm = Form.create({
   );
 });
 
-@connect(({teiltest, loading}) => ({
+@connect(({ teiltest, loading }) => ({
   teiltest,
   loading: loading.models.teiltest,
 }))
@@ -331,7 +349,7 @@ export default class TeilTestList extends PureComponent {
   };
 
   componentDidMount() {
-    const {dispatch} = this.props;
+    const { dispatch } = this.props;
 
     const params = {
       // currentPage: 1,
@@ -345,11 +363,11 @@ export default class TeilTestList extends PureComponent {
   }
 
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
-    const {dispatch} = this.props;
-    const {formValues} = this.state;
+    const { dispatch } = this.props;
+    const { formValues } = this.state;
 
     const filters = Object.keys(filtersArg).reduce((obj, key) => {
-      const newObj = {...obj};
+      const newObj = { ...obj };
       newObj[key] = getValue(filtersArg[key]);
       return newObj;
     }, {});
@@ -371,7 +389,7 @@ export default class TeilTestList extends PureComponent {
   };
 
   handleFormReset = () => {
-    const {form, dispatch} = this.props;
+    const { form, dispatch } = this.props;
     form.resetFields();
     this.setState({
       formValues: {},
@@ -391,7 +409,7 @@ export default class TeilTestList extends PureComponent {
   handleSearch = e => {
     e.preventDefault();
 
-    const {dispatch, form} = this.props;
+    const { dispatch, form } = this.props;
 
     form.validateFields((err, fieldsValue) => {
       if (err) return;
@@ -447,7 +465,9 @@ export default class TeilTestList extends PureComponent {
               !fields['sizeTestIstTime'] || fields['sizeTestIstTime'] === null
                 ? null
                 : fields['sizeTestIstTime'].format('YYYY-MM-DD 00:00:01'),
-            sizeTestReport: (fields['sizeTestReport']) ? this.getFileListFileId(fields['sizeTestReport'].fileList) : null,
+            sizeTestReport: fields['sizeTestReport']
+              ? this.getFileListFileId(fields['sizeTestReport'].fileList)
+              : null,
             materialSollTime:
               !fields['materialSollTime'] || fields['materialSollTime'] === null
                 ? null
@@ -460,12 +480,16 @@ export default class TeilTestList extends PureComponent {
               !fields['materialTestIstTime'] || fields['materialTestIstTime'] === null
                 ? null
                 : fields['materialTestIstTime'].format('YYYY-MM-DD 00:00:01'),
-            materialTestReport: (fields['materialTestReport']) ? this.getFileListFileId(fields['materialTestReport'].fileList) : null,
+            materialTestReport: fields['materialTestReport']
+              ? this.getFileListFileId(fields['materialTestReport'].fileList)
+              : null,
             supplierTestIstTime:
               !fields['supplierTestIstTime'] || fields['supplierTestIstTime'] === null
                 ? null
                 : fields['supplierTestIstTime'].format('YYYY-MM-DD 00:00:01'),
-            supplierTestReport: (fields['supplierTestReport']) ? this.getFileListFileId(fields['supplierTestReport'].fileList) : null,
+            supplierTestReport: fields['supplierTestReport']
+              ? this.getFileListFileId(fields['supplierTestReport'].fileList)
+              : null,
             sendWobTime:
               !fields['sendWobTime'] || fields['sendWobTime'] === null
                 ? null
@@ -474,7 +498,9 @@ export default class TeilTestList extends PureComponent {
               !fields['wobTestCompleteTime'] || fields['wobTestCompleteTime'] === null
                 ? null
                 : fields['wobTestCompleteTime'].format('YYYY-MM-DD 00:00:01'),
-            wobTestReport: (fields['wobTestReport']) ? this.getFileListFileId(fields['wobTestReport'].fileList) : null,
+            wobTestReport: fields['wobTestReport']
+              ? this.getFileListFileId(fields['wobTestReport'].fileList)
+              : null,
           },
         })
         .then(() => {
@@ -502,7 +528,9 @@ export default class TeilTestList extends PureComponent {
               fields['sizeTestIstTime'] === null
                 ? null
                 : fields['sizeTestIstTime'].format('YYYY-MM-DD 00:00:01'),
-            sizeTestReport: (fields['sizeTestReport']) ? this.getFileListFileId(fields['sizeTestReport'].fileList) : null,
+            sizeTestReport: fields['sizeTestReport']
+              ? this.getFileListFileId(fields['sizeTestReport'].fileList)
+              : null,
             materialSollTime:
               fields['materialSollTime'] === null
                 ? null
@@ -515,12 +543,16 @@ export default class TeilTestList extends PureComponent {
               fields['materialTestIstTime'] === null
                 ? null
                 : fields['materialTestIstTime'].format('YYYY-MM-DD 00:00:01'),
-            materialTestReport: (fields['materialTestReport']) ? this.getFileListFileId(fields['materialTestReport'].fileList) : null,
+            materialTestReport: fields['materialTestReport']
+              ? this.getFileListFileId(fields['materialTestReport'].fileList)
+              : null,
             supplierTestIstTime:
               fields['supplierTestIstTime'] === null
                 ? null
                 : fields['supplierTestIstTime'].format('YYYY-MM-DD 00:00:01'),
-            supplierTestReport: (fields['supplierTestReport']) ? this.getFileListFileId(fields['supplierTestReport'].fileList) : null,
+            supplierTestReport: fields['supplierTestReport']
+              ? this.getFileListFileId(fields['supplierTestReport'].fileList)
+              : null,
             sendWobTime:
               fields['sendWobTime'] === null
                 ? null
@@ -529,7 +561,9 @@ export default class TeilTestList extends PureComponent {
               fields['wobTestCompleteTime'] === null
                 ? null
                 : fields['wobTestCompleteTime'].format('YYYY-MM-DD 00:00:01'),
-            wobTestReport: (fields['wobTestReport']) ? this.getFileListFileId(fields['wobTestReport'].fileList) : null,
+            wobTestReport: fields['wobTestReport']
+              ? this.getFileListFileId(fields['wobTestReport'].fileList)
+              : null,
           },
         })
         .then(() => {
@@ -559,9 +593,7 @@ export default class TeilTestList extends PureComponent {
         }
       }
       return idList;
-    }
-    else
-      return null;
+    } else return null;
   };
 
   beforeUpload = file => {
@@ -573,18 +605,18 @@ export default class TeilTestList extends PureComponent {
   };
 
   renderSimpleForm() {
-    const {getFieldDecorator} = this.props.form;
+    const { getFieldDecorator } = this.props.form;
     return (
       <Form onSubmit={this.handleSearch} layout="inline">
-        <Row gutter={{md: 8, lg: 24, xl: 48}}>
+        <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
           <Col md={8} sm={24}>
             <FormItem label="Teil Nr.">
-              {getFieldDecorator('number')(<Input placeholder="请输入"/>)}
+              {getFieldDecorator('number')(<Input placeholder="请输入" />)}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
             <FormItem label="Benennung">
-              {getFieldDecorator('name')(<Input placeholder="请输入"/>)}
+              {getFieldDecorator('name')(<Input placeholder="请输入" />)}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
@@ -592,11 +624,11 @@ export default class TeilTestList extends PureComponent {
               <Button type="primary" htmlType="submit">
                 查询
               </Button>
-              <Button style={{marginLeft: 8}} onClick={this.handleFormReset}>
+              <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>
                 重置
               </Button>
-              <a style={{marginLeft: 8, display: 'none'}} onClick={this.toggleForm}>
-                展开 <Icon type="down"/>
+              <a style={{ marginLeft: 8, display: 'none' }} onClick={this.toggleForm}>
+                展开 <Icon type="down" />
               </a>
             </span>
           </Col>
@@ -606,19 +638,19 @@ export default class TeilTestList extends PureComponent {
   }
 
   renderAdvancedForm() {
-    const {getFieldDecorator} = this.props.form;
+    const { getFieldDecorator } = this.props.form;
     return (
       <Form onSubmit={this.handleSearch} layout="inline">
-        <Row gutter={{md: 8, lg: 24, xl: 48}}>
+        <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
           <Col md={8} sm={24}>
             <FormItem label="规则编号">
-              {getFieldDecorator('no')(<Input placeholder="请输入"/>)}
+              {getFieldDecorator('no')(<Input placeholder="请输入" />)}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
             <FormItem label="使用状态">
               {getFieldDecorator('status')(
-                <Select placeholder="请选择" style={{width: '100%'}}>
+                <Select placeholder="请选择" style={{ width: '100%' }}>
                   <Option value="0">关闭</Option>
                   <Option value="1">运行中</Option>
                 </Select>
@@ -627,22 +659,22 @@ export default class TeilTestList extends PureComponent {
           </Col>
           <Col md={8} sm={24}>
             <FormItem label="调用次数">
-              {getFieldDecorator('number')(<InputNumber style={{width: '100%'}}/>)}
+              {getFieldDecorator('number')(<InputNumber style={{ width: '100%' }} />)}
             </FormItem>
           </Col>
         </Row>
-        <Row gutter={{md: 8, lg: 24, xl: 48}}>
+        <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
           <Col md={8} sm={24}>
             <FormItem label="更新日期">
               {getFieldDecorator('date')(
-                <DatePicker style={{width: '100%'}} placeholder="请输入更新日期"/>
+                <DatePicker style={{ width: '100%' }} placeholder="请输入更新日期" />
               )}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
             <FormItem label="使用状态">
               {getFieldDecorator('status3')(
-                <Select placeholder="请选择" style={{width: '100%'}}>
+                <Select placeholder="请选择" style={{ width: '100%' }}>
                   <Option value="0">关闭</Option>
                   <Option value="1">运行中</Option>
                 </Select>
@@ -652,7 +684,7 @@ export default class TeilTestList extends PureComponent {
           <Col md={8} sm={24}>
             <FormItem label="使用状态">
               {getFieldDecorator('status4')(
-                <Select placeholder="请选择" style={{width: '100%'}}>
+                <Select placeholder="请选择" style={{ width: '100%' }}>
                   <Option value="0">关闭</Option>
                   <Option value="1">运行中</Option>
                 </Select>
@@ -660,16 +692,16 @@ export default class TeilTestList extends PureComponent {
             </FormItem>
           </Col>
         </Row>
-        <div style={{overflow: 'hidden'}}>
-          <span style={{float: 'right', marginBottom: 24}}>
+        <div style={{ overflow: 'hidden' }}>
+          <span style={{ float: 'right', marginBottom: 24 }}>
             <Button type="primary" htmlType="submit">
               查询
             </Button>
-            <Button style={{marginLeft: 8}} onClick={this.handleFormReset}>
+            <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>
               重置
             </Button>
-            <a style={{marginLeft: 8}} onClick={this.toggleForm}>
-              收起 <Icon type="up"/>
+            <a style={{ marginLeft: 8 }} onClick={this.toggleForm}>
+              收起 <Icon type="up" />
             </a>
           </span>
         </div>
@@ -682,7 +714,7 @@ export default class TeilTestList extends PureComponent {
   }
 
   remove = record => {
-    const {dispatch} = this.props;
+    const { dispatch } = this.props;
     dispatch({
       type: 'teiltest/remove',
       payload: {
@@ -697,8 +729,8 @@ export default class TeilTestList extends PureComponent {
   };
 
   render() {
-    const {teiltest: {data}, loading} = this.props;
-    const {modalVisible, teilList, isEdit, editRecord} = this.state;
+    const { teiltest: { data }, loading } = this.props;
+    const { modalVisible, teilList, isEdit, editRecord } = this.state;
 
     const columns = [
       {
@@ -717,7 +749,9 @@ export default class TeilTestList extends PureComponent {
         title: 'Benennung',
         dataIndex: 'teil.name',
         fixed: 'left',
-        render: (row, item) => <Link to={`/teil/teil-profile/${item.teil.id}`}>{item.teil.name}</Link>,
+        render: (row, item) => (
+          <Link to={`/teil/teil-profile/${item.teil.id}`}>{item.teil.name}</Link>
+        ),
       },
       {
         title: 'FOP',
@@ -750,7 +784,7 @@ export default class TeilTestList extends PureComponent {
               const url = `${UrlHead}${list[i].id}`;
               result.push(<a href={url}>{list[i].name}</a>);
               if (i !== list.length - 1) {
-                result.push(<Divider type="vertical"/>);
+                result.push(<Divider type="vertical" />);
               }
             }
           }
@@ -783,7 +817,7 @@ export default class TeilTestList extends PureComponent {
               const url = `${UrlHead}${list[i].id}`;
               result.push(<a href={url}>{list[i].name}</a>);
               if (i !== list.length - 1) {
-                result.push(<Divider type="vertical"/>);
+                result.push(<Divider type="vertical" />);
               }
             }
           }
@@ -806,7 +840,7 @@ export default class TeilTestList extends PureComponent {
               const url = `${UrlHead}${list[i].id}`;
               result.push(<a href={url}>{list[i].name}</a>);
               if (i !== list.length - 1) {
-                result.push(<Divider type="vertical"/>);
+                result.push(<Divider type="vertical" />);
               }
             }
           }
@@ -834,7 +868,7 @@ export default class TeilTestList extends PureComponent {
               const url = `${UrlHead}${list[i].id}`;
               result.push(<a href={url}>{list[i].name}</a>);
               if (i !== list.length - 1) {
-                result.push(<Divider type="vertical"/>);
+                result.push(<Divider type="vertical" />);
               }
             }
           }
@@ -872,7 +906,7 @@ export default class TeilTestList extends PureComponent {
         render: record => (
           <Fragment>
             <a onClick={() => this.handleEditModalVisible(record, true)}>编辑</a>
-            <Divider type="vertical"/>
+            <Divider type="vertical" />
             <Popconfirm
               title="删除该零件试验信息？"
               okText="是"
@@ -921,12 +955,12 @@ export default class TeilTestList extends PureComponent {
               columns={columns}
               onSelectRow={this.handleSelectRows}
               onChange={this.handleStandardTableChange}
-              scroll={{x: 3000}}
+              scroll={{ x: 3000 }}
             />
           </div>
         </Card>
 
-        <CreateForm {...parentMethods} {...parentFields} modalVisible={modalVisible}/>
+        <CreateForm {...parentMethods} {...parentFields} modalVisible={modalVisible} />
       </PageHeaderLayout>
     );
   }

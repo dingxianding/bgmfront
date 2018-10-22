@@ -8,7 +8,8 @@ import { getNotices } from './mock/notices';
 import { format, delay } from 'roadhog-api-doc';
 
 // 是否禁用代理
-const noProxy = process.env.NO_PROXY === 'true';
+//const noProxy = process.env.NO_PROXY === 'true';
+const noProxy = 'true';
 
 // 代码中会兼容本地 service mock 以及部署站点的静态数据
 const proxy = {
@@ -135,11 +136,11 @@ const proxy = {
       path: '/base/category/list',
     });
   },
-  '/myapi/(.*)': {
-    target: 'http://localhost:18080/',
-    changeOrigin: true,
-    pathRewrite: { '^/myapi': '' },
-  },
+  // '/myapi/(.*)': {
+  //   target: 'http://localhost:18080/',
+  //   changeOrigin: true,
+  //   pathRewrite: { '^/myapi': '' },
+  // },
   // Forward 到另一个服务器，并指定子路径
   // 请求 /datapack/0.0.50/index.css 会被代理到 https://g.alicdn.com/tb-page/taobao-home, 实际返回 https://g.alicdn.com/tb-page/taobao-home/0.0.50/index.css
   // 'GET /datapack/(.*)': 'http://localhost:18080/datapack',

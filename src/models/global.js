@@ -1,4 +1,8 @@
+import { routerRedux } from 'dva/router';
+import Cookies from 'universal-cookie';
 import { queryNotices } from '../services/api';
+
+const cookies = new Cookies();
 
 export default {
   namespace: 'global',
@@ -60,6 +64,13 @@ export default {
       return history.listen(({ pathname, search }) => {
         if (typeof window.ga !== 'undefined') {
           window.ga('send', 'pageview', pathname + search);
+        }
+      });
+    },
+    refuseTowAccount({ dispatch, history }) {
+      return history.listen(location => {
+        if (location.pathname.includes('/user/login') && cookies.get('access_token')) {
+          dispatch(routerRedux.push('/teil/teil-list'));
         }
       });
     },

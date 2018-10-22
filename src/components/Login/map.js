@@ -1,5 +1,5 @@
 import React from 'react';
-import {Input, Icon} from 'antd';
+import { Input, Icon } from 'antd';
 import styles from './index.less';
 
 const map = {
@@ -7,13 +7,13 @@ const map = {
     component: Input,
     props: {
       size: 'large',
-      prefix: <Icon type="user" className={styles.prefixIcon}/>,
+      prefix: <Icon type="user" className={styles.prefixIcon} />,
       placeholder: 'admin',
     },
     rules: [
       {
         required: true,
-        message: '请输入用户名',
+        message: '请输入用户名!',
       },
     ],
   },
@@ -21,14 +21,14 @@ const map = {
     component: Input,
     props: {
       size: 'large',
-      prefix: <Icon type="lock" className={styles.prefixIcon}/>,
+      prefix: <Icon type="lock" className={styles.prefixIcon} />,
       type: 'password',
       placeholder: '888888',
     },
     rules: [
       {
         required: true,
-        message: '请输入密码',
+        message: '请输入密码!',
       },
     ],
   },
@@ -36,17 +36,17 @@ const map = {
     component: Input,
     props: {
       size: 'large',
-      prefix: <Icon type="mobile" className={styles.prefixIcon}/>,
-      placeholder: 'mobile number',
+      prefix: <Icon type="mobile" className={styles.prefixIcon} />,
+      placeholder: '手机号码',
     },
     rules: [
       {
         required: true,
-        message: 'Please enter mobile number!',
+        message: '请输入手机号码!',
       },
       {
         pattern: /^1\d{10}$/,
-        message: 'Wrong mobile number format!',
+        message: '无效的手机号码!',
       },
     ],
   },
@@ -54,13 +54,13 @@ const map = {
     component: Input,
     props: {
       size: 'large',
-      prefix: <Icon type="mail" className={styles.prefixIcon}/>,
+      prefix: <Icon type="mail" className={styles.prefixIcon} />,
       placeholder: 'captcha',
     },
     rules: [
       {
         required: true,
-        message: 'Please enter Captcha!',
+        message: '请输入验证码!',
       },
     ],
   },

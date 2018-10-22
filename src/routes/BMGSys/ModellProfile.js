@@ -1,25 +1,25 @@
-import React, {Component} from 'react';
-import {connect} from 'dva';
-import {Card, Badge, Table, Divider} from 'antd';
+import React, { Component } from 'react';
+import { connect } from 'dva';
+import { Card, Badge, Table, Divider } from 'antd';
 import DescriptionList from 'components/DescriptionList';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 import styles from './TeilProfile.less';
-import moment from "moment";
-import {momentTime, momentDate} from '../../utils/utils';
-import {Link} from "react-router-dom";
+import moment from 'moment';
+import { momentTime, momentDate } from '../../utils/utils';
+import { Link } from 'react-router-dom';
 
-const {Description} = DescriptionList;
-const UrlHead = 'http://localhost:18080/download/';
+const { Description } = DescriptionList;
+const UrlHead = 'http://104.207.153.132:18080/download/';
 const bezugsart = ['CKD', 'LC'];
 const statusMap = ['default', 'processing', 'success', 'error'];
 const status = ['询价阶段', 'BMG认可中', 'BMG完成', '异常'];
 
-@connect(({modell}) => ({
+@connect(({ modell }) => ({
   modell,
 }))
 export default class ModellProfile extends Component {
   componentDidMount() {
-    const {dispatch, match} = this.props;
+    const { dispatch, match } = this.props;
     const id = parseInt(match.params.id, 10);
     dispatch({
       type: 'modell/getById',
@@ -30,7 +30,7 @@ export default class ModellProfile extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const {dispatch, match} = this.props;
+    const { dispatch, match } = this.props;
     const id = parseInt(nextProps.match.params.id, 10);
     if (nextProps.match.params.id && match.params.id !== nextProps.match.params.id) {
       dispatch({
@@ -43,7 +43,7 @@ export default class ModellProfile extends Component {
   }
 
   render() {
-    const {modell: {profile}} = this.props;
+    const { modell: { profile } } = this.props;
 
     const teilColumns = [
       {
@@ -80,7 +80,7 @@ export default class ModellProfile extends Component {
         ],
         onFilter: (value, record) => record.status.toString() === value,
         render(val) {
-          return <Badge status={statusMap[val]} text={status[val]}/>;
+          return <Badge status={statusMap[val]} text={status[val]} />;
         },
       },
       {
@@ -202,7 +202,7 @@ export default class ModellProfile extends Component {
           const url = `${UrlHead}${list[i].id}`;
           runPlan.push(<a href={url}>{list[i].name}</a>);
           if (i !== list.length - 1) {
-            runPlan.push(<Divider type="vertical"/>);
+            runPlan.push(<Divider type="vertical" />);
           }
         }
       }
@@ -210,7 +210,7 @@ export default class ModellProfile extends Component {
       return (
         <PageHeaderLayout title="车型详情">
           <Card bordered={false}>
-            <DescriptionList size="large" title="基础信息" style={{marginBottom: 32}}>
+            <DescriptionList size="large" title="基础信息" style={{ marginBottom: 32 }}>
               <Description term="车型名称">{profile.modell.name}</Description>
               <Description term="所属平台">{profile.modell.platform.name}</Description>
               <Description term="动力总成类型">{aggregatesResult}</Description>
@@ -220,28 +220,34 @@ export default class ModellProfile extends Component {
               <Description term="0S时间">{momentDate(profile.modell.osTime)}</Description>
               <Description term="SOP TBT时间">{momentDate(profile.modell.sopTbtTime)}</Description>
               <Description term="SOP时间">{momentDate(profile.modell.sopTime)}</Description>
-              <Description term="跑车数量（SWP/SVP/SPH/4KZ）">{profile.modell.runCount}</Description>
+              <Description term="跑车数量（SWP/SVP/SPH/4KZ）">
+                {profile.modell.runCount}
+              </Description>
               <Description term="跑车计划">{runPlan}</Description>
               <Description term="描述">{profile.modell.description}</Description>
-              <Description term="录入人员">{profile.modell.inUser ? profile.modell.inUser.name : null}</Description>
-              <Description term="录入时间">{moment(profile.modell.inTime).format('YYYY-MM-DD HH:mm:ss')}</Description>
-              <Description term="更新时间">{moment(profile.modell.updateTime).format('YYYY-MM-DD HH:mm:ss')}</Description>
+              <Description term="录入人员">
+                {profile.modell.inUser ? profile.modell.inUser.name : null}
+              </Description>
+              <Description term="录入时间">
+                {moment(profile.modell.inTime).format('YYYY-MM-DD HH:mm:ss')}
+              </Description>
+              <Description term="更新时间">
+                {moment(profile.modell.updateTime).format('YYYY-MM-DD HH:mm:ss')}
+              </Description>
             </DescriptionList>
-            <Divider style={{marginBottom: 32}}/>
-            <DescriptionList size="large" title="车型零件信息" style={{marginBottom: 32}}>
+            <Divider style={{ marginBottom: 32 }} />
+            <DescriptionList size="large" title="车型零件信息" style={{ marginBottom: 32 }}>
               <Table
                 columns={teilColumns}
                 dataSource={profile.teils}
                 pagination={false}
                 rowKey={item => item.id}
-                scroll={{x: 2000}}
+                scroll={{ x: 2000 }}
               />
             </DescriptionList>
           </Card>
         </PageHeaderLayout>
       );
     }
-
-
   }
 }
