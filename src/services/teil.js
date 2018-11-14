@@ -9,6 +9,14 @@ export async function query(params) {
   return request(`/myapi/teil/pagedList?${stringify(params)}`);
 }
 
+export async function initAll(params) {
+  return request(`/myapi/teil/initAll?${stringify(params)}`);
+}
+
+export async function queryAll(params) {
+  return request(`/myapi/teil/pagedListAll?${stringify(params)}`);
+}
+
 export async function getById({ id }) {
   return request(`/myapi/teil/${id}`);
 }

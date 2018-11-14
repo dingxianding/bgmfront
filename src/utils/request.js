@@ -1,7 +1,7 @@
 import fetch from 'dva/fetch';
 import Cookies from 'universal-cookie';
-import {notification} from 'antd';
-import {routerRedux} from 'dva/router';
+import { notification } from 'antd';
+import { routerRedux } from 'dva/router';
 import store from '../index';
 
 const cookies = new Cookies();
@@ -49,7 +49,7 @@ function checkStatus(response) {
 export default function request(url, options) {
   const defaultOptions = {
     credentials: 'same-origin',
-    headers: {Accept: 'application/json'},
+    headers: { Accept: 'application/json' },
   };
 
   const urlPrefix = url.indexOf('/myapi/users/login');
@@ -61,7 +61,7 @@ export default function request(url, options) {
       accessToken = cookies.get('access_token');
       defaultOptions.headers.Authorization = `Bearer ${accessToken}`;
     } else if (localStorage.getItem('access_token')) {
-      cookies.set('access_token', localStorage.getItem('access_token'), {path: '/'});
+      cookies.set('access_token', localStorage.getItem('access_token'), { path: '/' });
       accessToken = cookies.get('access_token');
       defaultOptions.headers.Authorization = `Bearer ${accessToken}`;
     } else {
@@ -72,7 +72,7 @@ export default function request(url, options) {
     }
   }
 
-  const newOptions = {...defaultOptions, ...options};
+  const newOptions = { ...defaultOptions, ...options };
   if (newOptions.method === 'POST' || newOptions.method === 'PUT') {
     if (!(newOptions.body instanceof FormData)) {
       newOptions.headers['Content-Type'] = 'application/json; charset=utf-8';
@@ -99,7 +99,7 @@ export default function request(url, options) {
       }
     })
     .catch(e => {
-      const {dispatch} = store;
+      const { dispatch } = store;
       const status = e.name;
       if (status === 401) {
         dispatch({

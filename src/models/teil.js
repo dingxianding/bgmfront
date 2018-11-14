@@ -1,4 +1,4 @@
-import { init, query, remove, add, update, getById } from '../services/teil';
+import { init, query, remove, add, update, getById, initAll, queryAll } from '../services/teil';
 
 export default {
   namespace: 'teil',
@@ -60,6 +60,24 @@ export default {
       //   payload: response,
       // });
       if (callback) callback();
+    },
+    *initAll({ payload }, { call, put }) {
+      try {
+        const response = yield call(initAll, payload);
+        yield put({
+          type: 'save',
+          payload: response,
+        });
+      } catch (e) {
+        throw e;
+      }
+    },
+    *fetchAll({ payload }, { call, put }) {
+      const response = yield call(queryAll, payload);
+      yield put({
+        type: 'save',
+        payload: response,
+      });
     },
   },
 

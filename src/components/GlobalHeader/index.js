@@ -1,11 +1,11 @@
-import React, {PureComponent} from 'react';
-import {Menu, Icon, Spin, Tag, Dropdown, Divider, Tooltip} from 'antd';
-import {Link} from 'dva/router';
+import React, { PureComponent } from 'react';
+import { Menu, Icon, Spin, Tag, Dropdown, Divider, Tooltip } from 'antd';
+import { Link } from 'dva/router';
 import moment from 'moment';
 import groupBy from 'lodash/groupBy';
 import Debounce from 'lodash-decorators/debounce';
-import {getAuthority} from '../../utils/authority';
-import {chineseRole} from '../../utils/utils';
+import { getAuthority } from '../../utils/authority';
+import { chineseRole } from '../../utils/utils';
 import styles from './index.less';
 
 export default class GlobalHeader extends PureComponent {
@@ -14,12 +14,12 @@ export default class GlobalHeader extends PureComponent {
   }
 
   getNoticeData() {
-    const {notices} = this.props;
+    const { notices } = this.props;
     if (notices == null || notices.length === 0) {
       return {};
     }
     const newNotices = notices.map(notice => {
-      const newNotice = {...notice};
+      const newNotice = { ...notice };
       if (newNotice.datetime) {
         newNotice.datetime = moment(notice.datetime).fromNow();
       }
@@ -35,7 +35,7 @@ export default class GlobalHeader extends PureComponent {
           doing: 'gold',
         }[newNotice.status];
         newNotice.extra = (
-          <Tag color={color} style={{marginRight: 0}}>
+          <Tag color={color} style={{ marginRight: 0 }}>
             {newNotice.extra}
           </Tag>
         );
@@ -46,7 +46,7 @@ export default class GlobalHeader extends PureComponent {
   }
 
   toggle = () => {
-    const {collapsed, onCollapse} = this.props;
+    const { collapsed, onCollapse } = this.props;
     onCollapse(!collapsed);
     this.triggerResizeEvent();
   };
@@ -60,19 +60,19 @@ export default class GlobalHeader extends PureComponent {
   }
 
   render() {
-    const {currentUser = {}, collapsed, isMobile, logo, onMenuClick} = this.props;
+    const { currentUser = {}, collapsed, isMobile, logo, onMenuClick } = this.props;
 
     const menu = (
       <Menu className={styles.menu} selectedKeys={[]} onClick={onMenuClick}>
         <Menu.Item>
           <Link to={'/personalCenter'}>
-            <Icon type="userCenter"/>
+            <Icon type="userCenter" />
             个人中心
           </Link>
         </Menu.Item>
-        <Menu.Divider/>
+        <Menu.Divider />
         <Menu.Item key="logout">
-          <Icon type="logout"/>
+          <Icon type="logout" />
           退出登录
         </Menu.Item>
       </Menu>
@@ -82,9 +82,9 @@ export default class GlobalHeader extends PureComponent {
       <div className={styles.header}>
         {isMobile && [
           <Link to="/" className={styles.logo} key="logo">
-            <img src={logo} alt="logo" width="32"/>
+            <img src={logo} alt="logo" width="32" />
           </Link>,
-          <Divider type="vertical" key="line"/>,
+          <Divider type="vertical" key="line" />,
         ]}
         <Icon
           className={styles.trigger}
@@ -100,7 +100,7 @@ export default class GlobalHeader extends PureComponent {
               </span>
             </Dropdown>
           ) : (
-            <Spin size="small" style={{marginLeft: 8}}/>
+            <Spin size="small" style={{ marginLeft: 8 }} />
           )}
         </div>
       </div>

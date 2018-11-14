@@ -1,7 +1,7 @@
-import React, {PureComponent, Fragment} from 'react';
-import {connect} from 'dva';
+import React, { PureComponent, Fragment } from 'react';
+import { connect } from 'dva';
 import moment from 'moment';
-import {Link} from 'dva/router';
+import { Link } from 'dva/router';
 import {
   Row,
   Col,
@@ -27,7 +27,7 @@ import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 import styles from './TeilList.less';
 
 const FormItem = Form.Item;
-const {Option} = Select;
+const { Option } = Select;
 const getValue = obj =>
   Object.keys(obj)
     .map(key => obj[key])
@@ -36,8 +36,7 @@ const bezugsart = ['CKD', 'LC'];
 const statusMap = ['default', 'processing', 'success', 'error'];
 const status = ['询价阶段', 'BMG认可中', 'BMG完成', '异常'];
 
-
-@connect(({teil, loading}) => ({
+@connect(({ teil, loading }) => ({
   teil,
   loading: loading.models.teil,
 }))
@@ -54,7 +53,7 @@ export default class TeilSearchList extends PureComponent {
   };
 
   componentDidMount() {
-    const {dispatch} = this.props;
+    const { dispatch } = this.props;
 
     const params = {
       // currentPage: 1,
@@ -62,17 +61,17 @@ export default class TeilSearchList extends PureComponent {
     };
 
     dispatch({
-      type: 'teil/init',
+      type: 'teil/initAll',
       payload: params,
     });
   }
 
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
-    const {dispatch} = this.props;
-    const {formValues} = this.state;
+    const { dispatch } = this.props;
+    const { formValues } = this.state;
 
     const filters = Object.keys(filtersArg).reduce((obj, key) => {
-      const newObj = {...obj};
+      const newObj = { ...obj };
       newObj[key] = getValue(filtersArg[key]);
       return newObj;
     }, {});
@@ -88,19 +87,19 @@ export default class TeilSearchList extends PureComponent {
     }
 
     dispatch({
-      type: 'teil/fetch',
+      type: 'teil/fetchAll',
       payload: params,
     });
   };
 
   handleFormReset = () => {
-    const {form, dispatch} = this.props;
+    const { form, dispatch } = this.props;
     form.resetFields();
     this.setState({
       formValues: {},
     });
     dispatch({
-      type: 'teil/fetch',
+      type: 'teil/fetchAll',
       payload: {},
     });
   };
@@ -114,7 +113,7 @@ export default class TeilSearchList extends PureComponent {
   handleSearch = e => {
     e.preventDefault();
 
-    const {dispatch, form} = this.props;
+    const { dispatch, form } = this.props;
 
     form.validateFields((err, fieldsValue) => {
       if (err) return;
@@ -129,21 +128,18 @@ export default class TeilSearchList extends PureComponent {
       });
 
       dispatch({
-        type: 'teil/fetch',
+        type: 'teil/fetchAll',
         payload: values,
       });
     });
   };
 
   renderSimpleForm() {
-    const {getFieldDecorator} = this.props.form;
-    const {
-      modellList,
-      aggregateList,
-    } = this.state;
+    const { getFieldDecorator } = this.props.form;
+    const { modellList, aggregateList } = this.state;
 
-    const modellChildren = [];// 车型
-    const aggregateChildren = [];// 动力总成
+    const modellChildren = []; // 车型
+    const aggregateChildren = []; // 动力总成
 
     if (modellList && modellList.length > 0) {
       // 车型
@@ -167,15 +163,15 @@ export default class TeilSearchList extends PureComponent {
 
     return (
       <Form onSubmit={this.handleSearch} layout="inline">
-        <Row gutter={{md: 8, lg: 24, xl: 48}}>
+        <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
           <Col md={8} sm={24}>
             <FormItem label="Teil Nr.">
-              {getFieldDecorator('number')(<Input placeholder="请输入"/>)}
+              {getFieldDecorator('number')(<Input placeholder="请输入" />)}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
             <FormItem label="Benennung">
-              {getFieldDecorator('name')(<Input placeholder="请输入"/>)}
+              {getFieldDecorator('name')(<Input placeholder="请输入" />)}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
@@ -183,7 +179,7 @@ export default class TeilSearchList extends PureComponent {
               {getFieldDecorator('modell')(
                 <Select
                   showSearch
-                  style={{width: 150}}
+                  style={{ width: 150 }}
                   placeholder="请选择"
                   optionFilterProp="children"
                   filterOption={(input, option) =>
@@ -191,17 +187,18 @@ export default class TeilSearchList extends PureComponent {
                   }
                 >
                   {modellChildren}
-                </Select>)}
+                </Select>
+              )}
             </FormItem>
           </Col>
         </Row>
-        <Row gutter={{md: 8, lg: 24, xl: 48}}>
+        <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
           <Col md={8} sm={24}>
             <FormItem label="Fzg. Aggregate">
               {getFieldDecorator('aggregate')(
                 <Select
                   showSearch
-                  style={{width: 150}}
+                  style={{ width: 150 }}
                   placeholder="请选择"
                   optionFilterProp="children"
                   filterOption={(input, option) =>
@@ -209,12 +206,13 @@ export default class TeilSearchList extends PureComponent {
                   }
                 >
                   {aggregateChildren}
-                </Select>)}
+                </Select>
+              )}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
             <FormItem label="FOP/MOP">
-              {getFieldDecorator('fop')(<Input placeholder="请输入"/>)}
+              {getFieldDecorator('fop')(<Input placeholder="请输入" />)}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
@@ -222,11 +220,11 @@ export default class TeilSearchList extends PureComponent {
               <Button type="primary" htmlType="submit">
                 查询
               </Button>
-              <Button style={{marginLeft: 8}} onClick={this.handleFormReset}>
+              <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>
                 重置
               </Button>
-              <a style={{marginLeft: 8, display: 'none'}} onClick={this.toggleForm}>
-                展开 <Icon type="down"/>
+              <a style={{ marginLeft: 8, display: 'none' }} onClick={this.toggleForm}>
+                展开 <Icon type="down" />
               </a>
             </span>
           </Col>
@@ -236,19 +234,19 @@ export default class TeilSearchList extends PureComponent {
   }
 
   renderAdvancedForm() {
-    const {getFieldDecorator} = this.props.form;
+    const { getFieldDecorator } = this.props.form;
     return (
       <Form onSubmit={this.handleSearch} layout="inline">
-        <Row gutter={{md: 8, lg: 24, xl: 48}}>
+        <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
           <Col md={8} sm={24}>
             <FormItem label="规则编号">
-              {getFieldDecorator('no')(<Input placeholder="请输入"/>)}
+              {getFieldDecorator('no')(<Input placeholder="请输入" />)}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
             <FormItem label="使用状态">
               {getFieldDecorator('status')(
-                <Select placeholder="请选择" style={{width: '100%'}}>
+                <Select placeholder="请选择" style={{ width: '100%' }}>
                   <Option value="0">关闭</Option>
                   <Option value="1">运行中</Option>
                 </Select>
@@ -257,22 +255,22 @@ export default class TeilSearchList extends PureComponent {
           </Col>
           <Col md={8} sm={24}>
             <FormItem label="调用次数">
-              {getFieldDecorator('number')(<InputNumber style={{width: '100%'}}/>)}
+              {getFieldDecorator('number')(<InputNumber style={{ width: '100%' }} />)}
             </FormItem>
           </Col>
         </Row>
-        <Row gutter={{md: 8, lg: 24, xl: 48}}>
+        <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
           <Col md={8} sm={24}>
             <FormItem label="更新日期">
               {getFieldDecorator('date')(
-                <DatePicker style={{width: '100%'}} placeholder="请输入更新日期"/>
+                <DatePicker style={{ width: '100%' }} placeholder="请输入更新日期" />
               )}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
             <FormItem label="使用状态">
               {getFieldDecorator('status3')(
-                <Select placeholder="请选择" style={{width: '100%'}}>
+                <Select placeholder="请选择" style={{ width: '100%' }}>
                   <Option value="0">关闭</Option>
                   <Option value="1">运行中</Option>
                 </Select>
@@ -282,7 +280,7 @@ export default class TeilSearchList extends PureComponent {
           <Col md={8} sm={24}>
             <FormItem label="使用状态">
               {getFieldDecorator('status4')(
-                <Select placeholder="请选择" style={{width: '100%'}}>
+                <Select placeholder="请选择" style={{ width: '100%' }}>
                   <Option value="0">关闭</Option>
                   <Option value="1">运行中</Option>
                 </Select>
@@ -290,16 +288,16 @@ export default class TeilSearchList extends PureComponent {
             </FormItem>
           </Col>
         </Row>
-        <div style={{overflow: 'hidden'}}>
-          <span style={{float: 'right', marginBottom: 24}}>
+        <div style={{ overflow: 'hidden' }}>
+          <span style={{ float: 'right', marginBottom: 24 }}>
             <Button type="primary" htmlType="submit">
               查询
             </Button>
-            <Button style={{marginLeft: 8}} onClick={this.handleFormReset}>
+            <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>
               重置
             </Button>
-            <a style={{marginLeft: 8}} onClick={this.toggleForm}>
-              收起 <Icon type="up"/>
+            <a style={{ marginLeft: 8 }} onClick={this.toggleForm}>
+              收起 <Icon type="up" />
             </a>
           </span>
         </div>
@@ -312,12 +310,8 @@ export default class TeilSearchList extends PureComponent {
   }
 
   render() {
-    const {teil: {data}, loading} = this.props;
-    const {
-      abgasstufeList,
-      modellList,
-      aggregateList,
-    } = this.state;
+    const { teil: { data }, loading } = this.props;
+    const { abgasstufeList, modellList, aggregateList } = this.state;
 
     const columns = [
       {
@@ -354,7 +348,7 @@ export default class TeilSearchList extends PureComponent {
         ],
         onFilter: (value, record) => record.status.toString() === value,
         render(val) {
-          return <Badge status={statusMap[val]} text={status[val]}/>;
+          return <Badge status={statusMap[val]} text={status[val]} />;
         },
       },
       {
@@ -476,7 +470,7 @@ export default class TeilSearchList extends PureComponent {
               columns={columns}
               onSelectRow={this.handleSelectRows}
               onChange={this.handleStandardTableChange}
-              scroll={{x: 2000}}
+              scroll={{ x: 2000 }}
             />
           </div>
         </Card>

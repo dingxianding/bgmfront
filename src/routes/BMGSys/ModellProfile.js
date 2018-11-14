@@ -9,7 +9,7 @@ import { momentTime, momentDate } from '../../utils/utils';
 import { Link } from 'react-router-dom';
 
 const { Description } = DescriptionList;
-const UrlHead = 'http://104.207.153.132:18080/download/';
+const UrlHead = 'http://104.207.153.132:18080/myapi/download/';
 const bezugsart = ['CKD', 'LC'];
 const statusMap = ['default', 'processing', 'success', 'error'];
 const status = ['询价阶段', 'BMG认可中', 'BMG完成', '异常'];

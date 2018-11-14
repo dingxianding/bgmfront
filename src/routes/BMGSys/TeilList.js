@@ -1,7 +1,7 @@
-import React, {PureComponent, Fragment} from 'react';
-import {connect} from 'dva';
+import React, { PureComponent, Fragment } from 'react';
+import { connect } from 'dva';
 import moment from 'moment';
-import {Link} from 'dva/router';
+import { Link } from 'dva/router';
 import {
   Row,
   Col,
@@ -27,7 +27,7 @@ import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 import styles from './TeilList.less';
 
 const FormItem = Form.Item;
-const {Option} = Select;
+const { Option } = Select;
 const getValue = obj =>
   Object.keys(obj)
     .map(key => obj[key])
@@ -62,11 +62,11 @@ const CreateForm = Form.create({
     isEdit,
     editRecord,
   } = props;
-  const bezugsartChildren = [];// 供货状态
-  const statusChildren = [];// 状态
-  const abgasstufeChildren = [];// 排放阶段
-  const modellChildren = [];// 车型
-  const aggregateChildren = [];// 动力总成
+  const bezugsartChildren = []; // 供货状态
+  const statusChildren = []; // 状态
+  const abgasstufeChildren = []; // 排放阶段
+  const modellChildren = []; // 车型
+  const aggregateChildren = []; // 动力总成
   let formTitle = '添加基础信息';
   const modells = [];
   const aggregates = [];
@@ -94,20 +94,12 @@ const CreateForm = Form.create({
 
   // 供货状态
   for (let i = 0; i < bezugsart.length; i += 1) {
-    bezugsartChildren.push(
-      <Option value={i}>
-        {bezugsart[i]}
-      </Option>
-    );
+    bezugsartChildren.push(<Option value={i}>{bezugsart[i]}</Option>);
   }
 
   // 状态
   for (let i = 0; i < status.length; i += 1) {
-    statusChildren.push(
-      <Option value={i}>
-        {status[i]}
-      </Option>
-    );
+    statusChildren.push(<Option value={i}>{status[i]}</Option>);
   }
 
   if (abgasstufeList && abgasstufeList.length > 0) {
@@ -143,7 +135,7 @@ const CreateForm = Form.create({
     form.validateFields((err, fieldsValue) => {
       if (err) return;
       form.resetFields();
-      let params = {...fieldsValue};
+      let params = { ...fieldsValue };
       if (isEdit) {
         params = {
           isEdit,
@@ -161,44 +153,40 @@ const CreateForm = Form.create({
       onOk={okHandle}
       onCancel={() => handleModalVisible()}
     >
-      <FormItem labelCol={{span: 8}} wrapperCol={{span: 15}} label="Teil Nr.">
+      <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 15 }} label="Teil Nr.">
         {form.getFieldDecorator('number', {
           initialValue: isEdit ? editRecord.number : null,
-          rules: [{required: true, message: '请输入Teil Nr.'}],
-        })(<Input placeholder="请输入"/>)}
+          rules: [{ required: true, message: '请输入Teil Nr.' }],
+        })(<Input placeholder="请输入" />)}
       </FormItem>
-      <FormItem labelCol={{span: 8}} wrapperCol={{span: 15}} label="Benennung">
+      <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 15 }} label="Benennung">
         {form.getFieldDecorator('name', {
           initialValue: isEdit ? editRecord.name : null,
-          rules: [{required: true, message: '请输入Benennung'}],
-        })(<Input placeholder="请输入"/>)}
+          rules: [{ required: true, message: '请输入Benennung' }],
+        })(<Input placeholder="请输入" />)}
       </FormItem>
-      <FormItem labelCol={{span: 8}} wrapperCol={{span: 15}} label="状态">
-        {form.getFieldDecorator('status', {initialValue: isEdit ? editRecord.status : null})(
-          <Select style={{width: 150}}>
-            {statusChildren}
-          </Select>
+      <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 15 }} label="状态">
+        {form.getFieldDecorator('status', { initialValue: isEdit ? editRecord.status : null })(
+          <Select style={{ width: 150 }}>{statusChildren}</Select>
         )}
       </FormItem>
-      <FormItem labelCol={{span: 8}} wrapperCol={{span: 15}} label="Lieferant">
+      <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 15 }} label="Lieferant">
         {form.getFieldDecorator('lieferant', {
           initialValue: isEdit ? editRecord.lieferant : null,
-        })(<Input placeholder="请输入"/>)}
+        })(<Input placeholder="请输入" />)}
       </FormItem>
-      <FormItem labelCol={{span: 8}} wrapperCol={{span: 15}} label="Bezugsart">
-        {form.getFieldDecorator('bezugsart', {initialValue: isEdit ? parseInt(editRecord.bezugsart) : null})(
-          <Select style={{width: 120}}>
-            {bezugsartChildren}
-          </Select>
-        )}
+      <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 15 }} label="Bezugsart">
+        {form.getFieldDecorator('bezugsart', {
+          initialValue: isEdit ? parseInt(editRecord.bezugsart) : null,
+        })(<Select style={{ width: 120 }}>{bezugsartChildren}</Select>)}
       </FormItem>
-      <FormItem labelCol={{span: 8}} wrapperCol={{span: 15}} label="Abgasstufe">
+      <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 15 }} label="Abgasstufe">
         {form.getFieldDecorator('abgasstufe', {
           initialValue: isEdit ? (editRecord.abgasstufe ? editRecord.abgasstufe.name : null) : null,
         })(
           <Select
             showSearch
-            style={{width: 150}}
+            style={{ width: 150 }}
             placeholder="请选择"
             optionFilterProp="children"
             filterOption={(input, option) =>
@@ -209,13 +197,13 @@ const CreateForm = Form.create({
           </Select>
         )}
       </FormItem>
-      <FormItem labelCol={{span: 8}} wrapperCol={{span: 15}} label="Ersteinsatz Modell">
+      <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 15 }} label="Ersteinsatz Modell">
         {form.getFieldDecorator('erstModell', {
           initialValue: isEdit ? (editRecord.erstModell ? editRecord.erstModell.name : null) : null,
         })(
           <Select
             showSearch
-            style={{width: 150}}
+            style={{ width: 150 }}
             placeholder="请选择"
             optionFilterProp="children"
             filterOption={(input, option) =>
@@ -226,7 +214,7 @@ const CreateForm = Form.create({
           </Select>
         )}
       </FormItem>
-      <FormItem labelCol={{span: 8}} wrapperCol={{span: 15}} label="Ersteinsatz Aggregate">
+      <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 15 }} label="Ersteinsatz Aggregate">
         {form.getFieldDecorator('erstAggregate', {
           initialValue: isEdit
             ? editRecord.erstAggregate ? editRecord.erstAggregate.name : null
@@ -234,7 +222,7 @@ const CreateForm = Form.create({
         })(
           <Select
             showSearch
-            style={{width: 150}}
+            style={{ width: 150 }}
             placeholder="请选择"
             optionFilterProp="children"
             filterOption={(input, option) =>
@@ -245,16 +233,16 @@ const CreateForm = Form.create({
           </Select>
         )}
       </FormItem>
-      <FormItem labelCol={{span: 8}} wrapperCol={{span: 15}} label="Fzg. Modell">
-        {form.getFieldDecorator('modells', {initialValue: isEdit ? modells : []})(
-          <Select mode="multiple" style={{width: 300}} placeholder="请选择">
+      <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 15 }} label="Fzg. Modell">
+        {form.getFieldDecorator('modells', { initialValue: isEdit ? modells : [] })(
+          <Select mode="multiple" style={{ width: 300 }} placeholder="请选择">
             {modellChildren}
           </Select>
         )}
       </FormItem>
-      <FormItem labelCol={{span: 8}} wrapperCol={{span: 15}} label="Fzg. Aggregate">
-        {form.getFieldDecorator('aggregates', {initialValue: isEdit ? aggregates : []})(
-          <Select mode="multiple" style={{width: 300}} placeholder="请选择">
+      <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 15 }} label="Fzg. Aggregate">
+        {form.getFieldDecorator('aggregates', { initialValue: isEdit ? aggregates : [] })(
+          <Select mode="multiple" style={{ width: 300 }} placeholder="请选择">
             {aggregateChildren}
           </Select>
         )}
@@ -263,7 +251,7 @@ const CreateForm = Form.create({
   );
 });
 
-@connect(({teil, loading}) => ({
+@connect(({ teil, loading }) => ({
   teil,
   loading: loading.models.teil,
 }))
@@ -282,7 +270,7 @@ export default class TeilList extends PureComponent {
   };
 
   componentDidMount() {
-    const {dispatch} = this.props;
+    const { dispatch } = this.props;
 
     const params = {
       // currentPage: 1,
@@ -296,11 +284,11 @@ export default class TeilList extends PureComponent {
   }
 
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
-    const {dispatch} = this.props;
-    const {formValues} = this.state;
+    const { dispatch } = this.props;
+    const { formValues } = this.state;
 
     const filters = Object.keys(filtersArg).reduce((obj, key) => {
-      const newObj = {...obj};
+      const newObj = { ...obj };
       newObj[key] = getValue(filtersArg[key]);
       return newObj;
     }, {});
@@ -322,7 +310,7 @@ export default class TeilList extends PureComponent {
   };
 
   handleFormReset = () => {
-    const {form, dispatch} = this.props;
+    const { form, dispatch } = this.props;
     form.resetFields();
     this.setState({
       formValues: {},
@@ -342,7 +330,7 @@ export default class TeilList extends PureComponent {
   handleSearch = e => {
     e.preventDefault();
 
-    const {dispatch, form} = this.props;
+    const { dispatch, form } = this.props;
 
     form.validateFields((err, fieldsValue) => {
       if (err) return;
@@ -418,18 +406,18 @@ export default class TeilList extends PureComponent {
   };
 
   renderSimpleForm() {
-    const {getFieldDecorator} = this.props.form;
+    const { getFieldDecorator } = this.props.form;
     return (
       <Form onSubmit={this.handleSearch} layout="inline">
-        <Row gutter={{md: 8, lg: 24, xl: 48}}>
+        <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
           <Col md={8} sm={24}>
             <FormItem label="Teil Nr.">
-              {getFieldDecorator('number')(<Input placeholder="请输入"/>)}
+              {getFieldDecorator('number')(<Input placeholder="请输入" />)}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
             <FormItem label="Benennung">
-              {getFieldDecorator('name')(<Input placeholder="请输入"/>)}
+              {getFieldDecorator('name')(<Input placeholder="请输入" />)}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
@@ -437,11 +425,11 @@ export default class TeilList extends PureComponent {
               <Button type="primary" htmlType="submit">
                 查询
               </Button>
-              <Button style={{marginLeft: 8}} onClick={this.handleFormReset}>
+              <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>
                 重置
               </Button>
-              <a style={{marginLeft: 8, display: 'none'}} onClick={this.toggleForm}>
-                展开 <Icon type="down"/>
+              <a style={{ marginLeft: 8, display: 'none' }} onClick={this.toggleForm}>
+                展开 <Icon type="down" />
               </a>
             </span>
           </Col>
@@ -451,19 +439,19 @@ export default class TeilList extends PureComponent {
   }
 
   renderAdvancedForm() {
-    const {getFieldDecorator} = this.props.form;
+    const { getFieldDecorator } = this.props.form;
     return (
       <Form onSubmit={this.handleSearch} layout="inline">
-        <Row gutter={{md: 8, lg: 24, xl: 48}}>
+        <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
           <Col md={8} sm={24}>
             <FormItem label="规则编号">
-              {getFieldDecorator('no')(<Input placeholder="请输入"/>)}
+              {getFieldDecorator('no')(<Input placeholder="请输入" />)}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
             <FormItem label="使用状态">
               {getFieldDecorator('status')(
-                <Select placeholder="请选择" style={{width: '100%'}}>
+                <Select placeholder="请选择" style={{ width: '100%' }}>
                   <Option value="0">关闭</Option>
                   <Option value="1">运行中</Option>
                 </Select>
@@ -472,22 +460,22 @@ export default class TeilList extends PureComponent {
           </Col>
           <Col md={8} sm={24}>
             <FormItem label="调用次数">
-              {getFieldDecorator('number')(<InputNumber style={{width: '100%'}}/>)}
+              {getFieldDecorator('number')(<InputNumber style={{ width: '100%' }} />)}
             </FormItem>
           </Col>
         </Row>
-        <Row gutter={{md: 8, lg: 24, xl: 48}}>
+        <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
           <Col md={8} sm={24}>
             <FormItem label="更新日期">
               {getFieldDecorator('date')(
-                <DatePicker style={{width: '100%'}} placeholder="请输入更新日期"/>
+                <DatePicker style={{ width: '100%' }} placeholder="请输入更新日期" />
               )}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
             <FormItem label="使用状态">
               {getFieldDecorator('status3')(
-                <Select placeholder="请选择" style={{width: '100%'}}>
+                <Select placeholder="请选择" style={{ width: '100%' }}>
                   <Option value="0">关闭</Option>
                   <Option value="1">运行中</Option>
                 </Select>
@@ -497,7 +485,7 @@ export default class TeilList extends PureComponent {
           <Col md={8} sm={24}>
             <FormItem label="使用状态">
               {getFieldDecorator('status4')(
-                <Select placeholder="请选择" style={{width: '100%'}}>
+                <Select placeholder="请选择" style={{ width: '100%' }}>
                   <Option value="0">关闭</Option>
                   <Option value="1">运行中</Option>
                 </Select>
@@ -505,16 +493,16 @@ export default class TeilList extends PureComponent {
             </FormItem>
           </Col>
         </Row>
-        <div style={{overflow: 'hidden'}}>
-          <span style={{float: 'right', marginBottom: 24}}>
+        <div style={{ overflow: 'hidden' }}>
+          <span style={{ float: 'right', marginBottom: 24 }}>
             <Button type="primary" htmlType="submit">
               查询
             </Button>
-            <Button style={{marginLeft: 8}} onClick={this.handleFormReset}>
+            <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>
               重置
             </Button>
-            <a style={{marginLeft: 8}} onClick={this.toggleForm}>
-              收起 <Icon type="up"/>
+            <a style={{ marginLeft: 8 }} onClick={this.toggleForm}>
+              收起 <Icon type="up" />
             </a>
           </span>
         </div>
@@ -527,7 +515,7 @@ export default class TeilList extends PureComponent {
   }
 
   remove = record => {
-    const {dispatch} = this.props;
+    const { dispatch } = this.props;
     dispatch({
       type: 'teil/remove',
       payload: {
@@ -542,7 +530,7 @@ export default class TeilList extends PureComponent {
   };
 
   render() {
-    const {teil: {data}, loading} = this.props;
+    const { teil: { data }, loading } = this.props;
     const {
       modalVisible,
       abgasstufeList,
@@ -562,7 +550,7 @@ export default class TeilList extends PureComponent {
         title: 'Benennung',
         dataIndex: 'name',
         sorter: true,
-        render: (row, item) =><Link to={`/teil/teil-profile/${item.id}`}>{item.name}</Link>,
+        render: (row, item) => <Link to={`/teil/teil-profile/${item.id}`}>{item.name}</Link>,
       },
       {
         title: '状态',
@@ -588,7 +576,7 @@ export default class TeilList extends PureComponent {
         filterMultiple: false,
         onFilter: (value, record) => record.status.toString() === value,
         render(val) {
-          return <Badge status={statusMap[val]} text={status[val]}/>;
+          return <Badge status={statusMap[val]} text={status[val]} />;
         },
       },
       {
@@ -695,7 +683,7 @@ export default class TeilList extends PureComponent {
         render: record => (
           <Fragment>
             <a onClick={() => this.handleEditModalVisible(record, true)}>编辑</a>
-            <Divider type="vertical"/>
+            <Divider type="vertical" />
             <Popconfirm
               title="将删除该零件所有相关信息，确认删除？"
               okText="是"
@@ -747,12 +735,12 @@ export default class TeilList extends PureComponent {
               columns={columns}
               onSelectRow={this.handleSelectRows}
               onChange={this.handleStandardTableChange}
-              scroll={{x: 2000}}
+              scroll={{ x: 2000 }}
             />
           </div>
         </Card>
 
-        <CreateForm {...parentMethods} {...parentFields} modalVisible={modalVisible}/>
+        <CreateForm {...parentMethods} {...parentFields} modalVisible={modalVisible} />
       </PageHeaderLayout>
     );
   }

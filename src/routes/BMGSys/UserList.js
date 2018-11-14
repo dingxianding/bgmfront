@@ -1,7 +1,7 @@
-import React, {PureComponent, Fragment} from 'react';
-import {connect} from 'dva';
+import React, { PureComponent, Fragment } from 'react';
+import { connect } from 'dva';
 import moment from 'moment';
-import {Link} from 'dva/router';
+import { Link } from 'dva/router';
 import {
   Row,
   Col,
@@ -24,13 +24,13 @@ import {
 import MyTable from 'components/MyTable';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 import md5 from 'blueimp-md5';
-import {stringRole, momentTime, chineseRole} from '../../utils/utils';
-import {getMyId} from '../../utils/authority';
+import { stringRole, momentTime, chineseRole } from '../../utils/utils';
+import { getMyId } from '../../utils/authority';
 
 import styles from './UserList.less';
 
 const FormItem = Form.Item;
-const {Option} = Select;
+const { Option } = Select;
 const getValue = obj =>
   Object.keys(obj)
     .map(key => obj[key])
@@ -41,16 +41,9 @@ const CreateForm = Form.create({
     return {};
   },
 })(props => {
-  const {
-    modalVisible,
-    form,
-    handleAdd,
-    handleModalVisible,
-    isEdit,
-    editRecord,
-  } = props;
+  const { modalVisible, form, handleAdd, handleModalVisible, isEdit, editRecord } = props;
 
-  const roleChildren = [];// 供货状态
+  const roleChildren = []; // 供货状态
   let formTitle = '添加用户';
   if (isEdit) {
     formTitle = '编辑用户';
@@ -64,7 +57,7 @@ const CreateForm = Form.create({
     form.validateFields((err, fieldsValue) => {
       if (err) return;
       form.resetFields();
-      let params = {...fieldsValue};
+      let params = { ...fieldsValue };
       if (isEdit) {
         params = {
           isEdit,
@@ -82,44 +75,40 @@ const CreateForm = Form.create({
       onOk={okHandle}
       onCancel={() => handleModalVisible()}
     >
-      <FormItem labelCol={{span: 8}} wrapperCol={{span: 15}} label="用户名">
+      <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 15 }} label="用户名">
         {form.getFieldDecorator('username', {
           initialValue: isEdit ? editRecord.username : null,
-          rules: [{required: true, message: '请输入用户名'}],
-        })(<Input placeholder="请输入"/>)}
+          rules: [{ required: true, message: '请输入用户名' }],
+        })(<Input placeholder="请输入" />)}
       </FormItem>
-      <FormItem labelCol={{span: 8}} wrapperCol={{span: 15}} label="工号">
+      <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 15 }} label="工号">
         {form.getFieldDecorator('number', {
           initialValue: isEdit ? editRecord.number : null,
-          rules: [{required: true, message: '请输入工号'}],
-        })(<Input placeholder="请输入"/>)}
+          rules: [{ required: true, message: '请输入工号' }],
+        })(<Input placeholder="请输入" />)}
       </FormItem>
-      <FormItem labelCol={{span: 8}} wrapperCol={{span: 15}} label="姓名">
+      <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 15 }} label="姓名">
         {form.getFieldDecorator('name', {
           initialValue: isEdit ? editRecord.name : null,
-          rules: [{required: true, message: '请输入姓名'}],
-        })(<Input placeholder="请输入"/>)}
+          rules: [{ required: true, message: '请输入姓名' }],
+        })(<Input placeholder="请输入" />)}
       </FormItem>
-      <FormItem labelCol={{span: 8}} wrapperCol={{span: 15}} label="用户角色">
+      <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 15 }} label="用户角色">
         {form.getFieldDecorator('role', {
           initialValue: isEdit ? parseInt(editRecord.role) : null,
-          rules: [{required: true, message: '请选择角色'}],
-        })(
-          <Select style={{width: 120}}>
-            {roleChildren}
-          </Select>
-        )}
+          rules: [{ required: true, message: '请选择角色' }],
+        })(<Select style={{ width: 120 }}>{roleChildren}</Select>)}
       </FormItem>
-      <FormItem labelCol={{span: 8}} wrapperCol={{span: 15}} label="备注">
+      <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 15 }} label="备注">
         {form.getFieldDecorator('remark', {
           initialValue: isEdit ? editRecord.remark : null,
-        })(<Input placeholder="请输入"/>)}
+        })(<Input placeholder="请输入" />)}
       </FormItem>
     </Modal>
   );
 });
 
-@connect(({usermng, loading}) => ({
+@connect(({ usermng, loading }) => ({
   usermng,
   loading: loading.models.usermng,
 }))
@@ -135,7 +124,7 @@ export default class TeilList extends PureComponent {
   };
 
   componentDidMount() {
-    const {dispatch} = this.props;
+    const { dispatch } = this.props;
 
     const params = {
       // currentPage: 1,
@@ -149,11 +138,11 @@ export default class TeilList extends PureComponent {
   }
 
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
-    const {dispatch} = this.props;
-    const {formValues} = this.state;
+    const { dispatch } = this.props;
+    const { formValues } = this.state;
 
     const filters = Object.keys(filtersArg).reduce((obj, key) => {
-      const newObj = {...obj};
+      const newObj = { ...obj };
       newObj[key] = getValue(filtersArg[key]);
       return newObj;
     }, {});
@@ -175,7 +164,7 @@ export default class TeilList extends PureComponent {
   };
 
   handleFormReset = () => {
-    const {form, dispatch} = this.props;
+    const { form, dispatch } = this.props;
     form.resetFields();
     this.setState({
       formValues: {},
@@ -195,7 +184,7 @@ export default class TeilList extends PureComponent {
   handleSearch = e => {
     e.preventDefault();
 
-    const {dispatch, form} = this.props;
+    const { dispatch, form } = this.props;
 
     form.validateFields((err, fieldsValue) => {
       if (err) return;
@@ -271,18 +260,18 @@ export default class TeilList extends PureComponent {
   };
 
   renderSimpleForm() {
-    const {getFieldDecorator} = this.props.form;
+    const { getFieldDecorator } = this.props.form;
     return (
       <Form onSubmit={this.handleSearch} layout="inline">
-        <Row gutter={{md: 8, lg: 24, xl: 48}}>
+        <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
           <Col md={8} sm={24}>
             <FormItem label="工号">
-              {getFieldDecorator('number')(<Input placeholder="请输入"/>)}
+              {getFieldDecorator('number')(<Input placeholder="请输入" />)}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
             <FormItem label="姓名">
-              {getFieldDecorator('name')(<Input placeholder="请输入"/>)}
+              {getFieldDecorator('name')(<Input placeholder="请输入" />)}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
@@ -290,11 +279,11 @@ export default class TeilList extends PureComponent {
               <Button type="primary" htmlType="submit">
                 查询
               </Button>
-              <Button style={{marginLeft: 8}} onClick={this.handleFormReset}>
+              <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>
                 重置
               </Button>
-              <a style={{marginLeft: 8, display: 'none'}} onClick={this.toggleForm}>
-                展开 <Icon type="down"/>
+              <a style={{ marginLeft: 8, display: 'none' }} onClick={this.toggleForm}>
+                展开 <Icon type="down" />
               </a>
             </span>
           </Col>
@@ -308,7 +297,7 @@ export default class TeilList extends PureComponent {
   }
 
   remove = record => {
-    const {dispatch} = this.props;
+    const { dispatch } = this.props;
     dispatch({
       type: 'usermng/remove',
       payload: {
@@ -323,12 +312,8 @@ export default class TeilList extends PureComponent {
   };
 
   render() {
-    const {usermng: {data}, loading} = this.props;
-    const {
-      modalVisible,
-      isEdit,
-      editRecord,
-    } = this.state;
+    const { usermng: { data }, loading } = this.props;
+    const { modalVisible, isEdit, editRecord } = this.state;
 
     const columns = [
       {
@@ -384,7 +369,7 @@ export default class TeilList extends PureComponent {
         render: record => (
           <Fragment>
             <a onClick={() => this.handleEditModalVisible(record, true)}>编辑</a>
-            <Divider type="vertical"/>
+            <Divider type="vertical" />
             <Popconfirm
               title="将删除该用户所有相关信息，确认删除？"
               okText="是"
@@ -429,9 +414,8 @@ export default class TeilList extends PureComponent {
           </div>
         </Card>
 
-        <CreateForm {...parentMethods} {...parentFields} modalVisible={modalVisible}/>
+        <CreateForm {...parentMethods} {...parentFields} modalVisible={modalVisible} />
       </PageHeaderLayout>
     );
   }
 }
-

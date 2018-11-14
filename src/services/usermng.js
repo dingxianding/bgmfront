@@ -1,4 +1,4 @@
-import {stringify} from 'qs';
+import { stringify } from 'qs';
 import request from '../utils/request';
 
 export async function init(params) {
@@ -19,7 +19,7 @@ export async function add(params) {
   });
 }
 
-export async function remove({id}) {
+export async function remove({ id }) {
   return request(`/myapi/users/${id}`, {
     method: 'DELETE',
   });

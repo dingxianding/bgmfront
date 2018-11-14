@@ -1,17 +1,19 @@
-import {Upload, Button, Icon} from 'antd';
+import { Upload, Button, Icon } from 'antd';
 
 //要限制只添加一个文件的话，就要用这个组件
 //还没有写完
 class MyUpload extends React.Component {
   state = {
-    fileList: [{
-      uid: -1,
-      name: 'xxx.png',
-      status: 'done',
-      url: 'http://www.baidu.com/xxx.png',
-    }],
-  }
-  handleChange = (info) => {
+    fileList: [
+      {
+        uid: -1,
+        name: 'xxx.png',
+        status: 'done',
+        url: 'http://www.baidu.com/xxx.png',
+      },
+    ],
+  };
+  handleChange = info => {
     let fileList = info.fileList;
 
     // 1. Limit the number of uploaded files
@@ -19,7 +21,7 @@ class MyUpload extends React.Component {
     fileList = fileList.slice(-1);
 
     // 2. read from response and show file link
-    fileList = fileList.map((file) => {
+    fileList = fileList.map(file => {
       if (file.response) {
         // Component will show file.url as link
         file.url = file.response.url;
@@ -28,15 +30,15 @@ class MyUpload extends React.Component {
     });
 
     // 3. filter successfully uploaded files according to response from server
-    fileList = fileList.filter((file) => {
+    fileList = fileList.filter(file => {
       if (file.response) {
         return file.response.status === 'success';
       }
       return true;
     });
 
-    this.setState({fileList});
-  }
+    this.setState({ fileList });
+  };
 
   render() {
     const props = {
@@ -47,7 +49,7 @@ class MyUpload extends React.Component {
     return (
       <Upload {...props} fileList={this.state.fileList}>
         <Button>
-          <Icon type="upload"/> upload
+          <Icon type="upload" /> upload
         </Button>
       </Upload>
     );

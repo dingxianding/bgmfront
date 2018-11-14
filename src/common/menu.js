@@ -1,4 +1,4 @@
-import {isUrl} from '../utils/utils';
+import { isUrl } from '../utils/utils';
 
 const menuData = [
   {
@@ -38,7 +38,7 @@ const menuData = [
       {
         name: '车型信息',
         path: 'modell-list',
-        authority: ['admin','master'],
+        authority: ['admin', 'master', 'user'],
       },
       {
         name: '零部件查询',
@@ -53,12 +53,11 @@ const menuData = [
     path: 'users',
     authority: ['admin'],
   },
-
 ];
 
 function formatter(data, parentPath = '/', parentAuthority) {
   return data.map(item => {
-    let {path} = item;
+    let { path } = item;
     if (!isUrl(path)) {
       path = parentPath + item.path;
     }

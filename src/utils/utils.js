@@ -1,5 +1,5 @@
 import moment from 'moment';
-import {parse, stringify} from 'qs';
+import { parse, stringify } from 'qs';
 
 export function stringRole(val) {
   switch (val) {
@@ -208,7 +208,6 @@ export function getRoutes(path, routerData) {
   });
   return renderRoutes;
 }
-
 
 export function getPageQuery() {
   return parse(window.location.href.split('?')[1]);
